@@ -1,8 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const User = require('./models/user');
-const Doctor = require('./models/doctor');
-const Appointment = require('./models/appointment');
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
+const doctorRoutes = require('./routes/doctors');
+const appointmentRoutes = require('./routes/appointments');
+
 const app = express();
 
 // Sử dụng body-parser middleware để phân tích cú pháp JSON
@@ -18,93 +20,11 @@ mongoose.connect(mongoURI, {
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.log(err));
 
-// Tạo route để thêm người dùng mới
-app.post('/users', async (req, res) => {
-  const newUser = new User(req.body);
-  try {
-    const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-// Tạo route để thêm bác sĩ mới
-app.post('/doctors', async (req, res) => {
-  const newDoctor = new Doctor(req.body);
-  try {
-    const savedDoctor = await newDoctor.save();
-    res.status(201).json(savedDoctor);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-// Tạo route để thêm cuộc hẹn mới
-app.post('/appointments', async (req, res) => {
-  const { userId, doctorId, date, time, status, note } = req.body;
-
-  const newAppointment = new Appointment({
-    userId,
-    doctorId,
-    date,
-    time,
-    status,
-    note
-  });
-
-  try {
-    const savedAppointment = await newAppointment.save();
-
-    // Cập nhật mảng appointments của user
-    await User.findByIdAndUpdate(userId, {
-      $push: { appointments: savedAppointment.mongoose.Types.ObjectId }
-    });
-
-    // Cập nhật mảng appointments của doctor
-    await Doctor.findByIdAndUpdate(doctorId, {
-      $push: { appointments: savedAppointment._id }
-    });
-
-    res.status(201).json(savedAppointment);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-// Tạo route để lấy tất cả người dùng
-app.get('/users', async (req, res) => {
-  try {
-    const users = await User.find()
-    // .populate('appointments');
-    res.status(200).json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Tạo route để lấy tất cả bác sĩ
-app.get('/doctors', async (req, res) => {
-  try {
-    const doctors = await Doctor.find()
-    // .populate('appointments');
-    res.status(200).json(doctors);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Tạo route để lấy tất cả cuộc hẹn
-app.get('/appointments', async (req, res) => {
-  try {
-    const appointments = await Appointment.find()
-      // .populate('userId', 'name email')
-      // .populate('doctorId', 'name email department');
-    res.status(200).json(appointments);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// Định nghĩa các route
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/doctors', doctorRoutes);
+app.use('/api/appointments', appointmentRoutes);
 
 // Bắt đầu server
 const PORT = process.env.PORT || 5000;
