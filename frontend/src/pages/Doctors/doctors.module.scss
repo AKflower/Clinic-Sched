@@ -1,0 +1,10 @@
+.container{
+    padding-bottom: 2em;
+
+    .doctorsContainer{
+        width: 90%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 cột có kích thước bằng nhau */
+        gap: 2em; /* Khoảng cách giữa các cột */
+    }
+}

@@ -1,0 +1,16 @@
+.container{
+    background: #F4FEFF;
+    padding: 1em 2em;
+    border-radius: 10px;
+    cursor: pointer;
+    &:hover{
+        box-shadow: 1px 2px 3px #b3b4b4;
+    }
+    .field{
+        display: flex;
+        div:nth-of-type(1) {
+            min-width: 10em;
+        }
+    }
+    
+}

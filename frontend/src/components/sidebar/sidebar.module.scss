@@ -1,0 +1,27 @@
+.container {
+    max-width: 20em;
+    /* text-align: center; */
+    min-width: 20vw;
+    height: 100%;
+    position: fixed;
+    z-index: 1000;
+    background: #D4F8FA;
+    padding: 1em 0;
+    top:0;
+    .item{
+        display: flex;
+        align-items: center;
+        padding: 1em;
+        column-gap: 1em;
+        margin: 0 2em;
+        border-radius: 10px;
+        &:hover{
+            background-color: #17BB4F;
+            color:white;
+        }
+        span{
+            text-decoration: none;
+        }
+        
+    }
+}
