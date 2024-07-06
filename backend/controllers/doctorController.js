@@ -56,38 +56,30 @@ exports.deleteDoctor = async (req, res) => {
   }
 };
 
-exports.getAvailableDoctors = async (req, res) => {
+exports.getDoctorsWithAvailability = async (req, res) => {
   const { departmentId } = req.params;
   const { date, time } = req.query;
+
   try {
     // Tìm tất cả các bác sĩ trong department
-    const doctorsInDepartment = await Doctor.find({ department: departmentId });
-    console.log(doctorsInDepartment)
+    const doctorsInDepartment = await Doctor.find({ department: departmentId }).populate('department', 'name');
 
     // Tìm tất cả các cuộc hẹn trong thời gian thực
     const appointmentsInTimeSlot = await Appointment.find({ date, time });
 
-    // Lọc ra các bác sĩ không có cuộc hẹn trong thời gian thực
-    const availableDoctors = doctorsInDepartment.filter(doctor => 
-      !appointmentsInTimeSlot.some(appointment => 
+    // Tạo danh sách các bác sĩ với trạng thái bận rộn
+    const doctorsWithAvailability = doctorsInDepartment.map(doctor => {
+      const isBusy = appointmentsInTimeSlot.some(appointment => 
         appointment.doctorId.toString() === doctor._id.toString()
-      )
-    );
+      );
 
-    res.status(200).json(availableDoctors);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};  
+      return {
+        ...doctor._doc,
+        isBusy
+      };
+    });
 
-exports.getDoctorsByDepartment = async (req, res) => {
-  const { departmentId } = req.params;
-
-  try {
-    // Tìm tất cả các bác sĩ trong department
-    const doctors = await Doctor.find({ department: departmentId }).populate('department', 'name');
-
-    res.status(200).json(doctors);
+    res.status(200).json(doctorsWithAvailability);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
