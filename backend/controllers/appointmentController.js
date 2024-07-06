@@ -78,3 +78,20 @@ exports.deleteAppointment = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+exports.getDoctorAppointmentsByDate = async (req, res) => {
+  const { doctorId } = req.params;
+  const { date } = req.query;
+
+  try {
+    // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
+    const appointments = await Appointment.find({ doctorId, date });
+
+    // Lấy ra các thời gian của cuộc hẹn
+    const appointmentTimes = appointments.map(appointment => appointment.time);
+
+    res.status(200).json(appointmentTimes);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
