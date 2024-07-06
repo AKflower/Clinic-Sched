@@ -1,4 +1,5 @@
 const Doctor = require('../models/doctor');
+const Appointment = require('../models/Appointment');
 
 exports.getAllDoctors = async (req, res) => {
   try {
@@ -54,3 +55,27 @@ exports.deleteDoctor = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+exports.getAvailableDoctors = async (req, res) => {
+  const { departmentId } = req.params;
+  const { date, time } = req.query;
+  try {
+    // Tìm tất cả các bác sĩ trong department
+    const doctorsInDepartment = await Doctor.find({ department: departmentId });
+    console.log(doctorsInDepartment)
+
+    // Tìm tất cả các cuộc hẹn trong thời gian thực
+    const appointmentsInTimeSlot = await Appointment.find({ date, time });
+
+    // Lọc ra các bác sĩ không có cuộc hẹn trong thời gian thực
+    const availableDoctors = doctorsInDepartment.filter(doctor => 
+      !appointmentsInTimeSlot.some(appointment => 
+        appointment.doctorId.toString() === doctor._id.toString()
+      )
+    );
+
+    res.status(200).json(availableDoctors);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};  
