@@ -4,6 +4,7 @@ const User = require('../models/User');
 
 // Đăng ký tài khoản
 exports.register = async (req, res) => {
+  console.log('Test',req.body)
   const { name, phone, email, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = new User({ name, phone, email, password: hashedPassword, role: 'user' });
