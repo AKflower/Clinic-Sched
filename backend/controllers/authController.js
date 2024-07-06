@@ -27,7 +27,7 @@ exports.login = async (req, res) => {
   if (!isMatch) return res.status(400).json({ message: 'Invalid phone or password.' });
 
   const token = jwt.sign({ _id: user._id, role: user.role }, 'dung0804');
-  res.json({ token });
+  res.json({ token, id: user._id, name: user.name });
 };
 
 exports.changePassword = async (req, res) => {

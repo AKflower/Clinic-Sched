@@ -1,4 +1,5 @@
 const Doctor = require('../models/doctor');
+const Appointment = require('../models/Appointment');
 
 exports.getAllDoctors = async (req, res) => {
   try {
@@ -52,5 +53,34 @@ exports.deleteDoctor = async (req, res) => {
     res.status(200).json({ message: 'Doctor deleted successfully.' });
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+};
+
+exports.getDoctorsWithAvailability = async (req, res) => {
+  const { departmentId } = req.params;
+  const { date, time } = req.query;
+
+  try {
+    // Tìm tất cả các bác sĩ trong department
+    const doctorsInDepartment = await Doctor.find({ department: departmentId }).populate('department', 'name');
+
+    // Tìm tất cả các cuộc hẹn trong thời gian thực
+    const appointmentsInTimeSlot = await Appointment.find({ date, time });
+
+    // Tạo danh sách các bác sĩ với trạng thái bận rộn
+    const doctorsWithAvailability = doctorsInDepartment.map(doctor => {
+      const isBusy = appointmentsInTimeSlot.some(appointment => 
+        appointment.doctorId.toString() === doctor._id.toString()
+      );
+
+      return {
+        ...doctor._doc,
+        isBusy
+      };
+    });
+
+    res.status(200).json(doctorsWithAvailability);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

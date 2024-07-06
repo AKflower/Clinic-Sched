@@ -8,5 +8,6 @@ router.get('/:id', authenticateToken, authorizeRole(['admin']), appointmentContr
 router.post('/', authenticateToken, authorizeRole(['user']), appointmentController.addAppointment);
 router.put('/:id', authenticateToken, authorizeRole(['user', 'doctor']), appointmentController.updateAppointment);
 router.delete('/:id', authenticateToken, authorizeRole(['user', 'doctor']), appointmentController.deleteAppointment);
+router.get('/doctor/:doctorId/times', authenticateToken, appointmentController.getDoctorAppointmentsByDate);
 
 module.exports = router;
