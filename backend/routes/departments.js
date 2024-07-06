@@ -8,5 +8,6 @@ router.post('/', authenticateToken, authorizeRole(['admin']), departmentControll
 router.put('/:id', authenticateToken, authorizeRole(['admin']), departmentController.updateDepartment);
 router.delete('/:id', authenticateToken, authorizeRole(['admin']), departmentController.deleteDepartment);
 router.get('/', authenticateToken, authorizeRole(['admin', 'doctor', 'user']), departmentController.getAllDepartments);
+router.get('/:id', authenticateToken, authorizeRole(['admin', 'doctor', 'user']), departmentController.getDepartmentById);
 
 module.exports = router;

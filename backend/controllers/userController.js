@@ -10,6 +10,15 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.addUser = async (req, res) => {
   const { name, phone, email, password, role } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
