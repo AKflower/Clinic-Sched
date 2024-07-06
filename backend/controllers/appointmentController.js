@@ -11,6 +11,15 @@ exports.getAllAppointments = async (req, res) => {
   }
 };
 
+exports.getAppointmentById = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+    res.status(200).json(appointment);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.addAppointment = async (req, res) => {
   const { userId, doctorId, date, time, status, note } = req.body;
 
