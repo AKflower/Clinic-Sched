@@ -9,11 +9,38 @@ exports.getAllDoctors = async (req, res) => {
   }
 };
 
-exports.createDoctor = async (req, res) => {
-  const newDoctor = new Doctor(req.body);
+exports.addDoctor = async (req, res) => {
+  const { name, phone, email, password, department } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newDoctor = new Doctor({ name, phone, email, password: hashedPassword, department });
+
   try {
     const savedDoctor = await newDoctor.save();
     res.status(201).json(savedDoctor);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+exports.updateDoctor = async (req, res) => {
+  const { name, phone, email, password, department } = req.body;
+  const updateData = { name, phone, email, department };
+  if (password) {
+    updateData.password = await bcrypt.hash(password, 10);
+  }
+
+  try {
+    const updatedDoctor = await Doctor.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.status(200).json(updatedDoctor);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+exports.deleteDoctor = async (req, res) => {
+  try {
+    await Doctor.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Doctor deleted successfully.' });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
