@@ -13,7 +13,7 @@ export default function Sidebar () {
     console.log(path);  
     
     return (
-        <div className={styles.container}>
+        <div className={styles.container} style={{display:path.includes('/login') || path.includes('/register') || path.includes('/forgot') ? 'none' : 'block'}}>
             <div style={{margin: '0 0 0 2em'}}><Brand size={1} /></div>
             
             <Link to='/home'>
