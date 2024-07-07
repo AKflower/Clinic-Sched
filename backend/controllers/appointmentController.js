@@ -1,4 +1,4 @@
-const Appointment = require('../models/appointment');
+const Appointment = require('../models/Appointment');
 const User = require('../models/User');
 const Doctor = require('../models/doctor');
 const mongoose = require('mongoose');

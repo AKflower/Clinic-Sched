@@ -10,6 +10,8 @@ import Modal from 'react-modal';
 import Input from '../../components/input/input';
 import Select from '../../components/select/select';
 import appointmentService from '../../services/appointment';
+import { toast } from 'react-toastify';
+import CardFile from '../../components/card/cardFile'
 
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
 
@@ -17,28 +19,41 @@ Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng d�
 export default function Booking() {
     const userId = localStorage.getItem('id');
     console.log(userId)
-    const timeSlotsData = [
-        { id: 0, name: '8:00', time: '08:00'},
-        { id: 1, name: '8:30', time: '08:30' },
-        { id: 2, name: '9:00', time: '09:00' },
-        { id: 3, name: '9:30', time: '09:30' },
-        { id: 4, name: '10:00', time: '10:00' },
-        { id: 5, name: '10:30', time: '10:30' },
-        { id: 6, name: '11:00', time: '11:00' },
-        { id: 7, name: '11:30', time: '11:30' },
-        { id: 8, name: '13:00', time: '13:00' },
-        { id: 9, name: '13:30', time: '13:30' },
-        { id: 10, name: '14:00', time: '14:00' },
-        { id: 11, name: '14:30', time: '14:30' },
-        { id: 12, name: '15:00', time: '15:00' },
-        { id: 13, name: '15:30', time: '15:30' },
-        { id: 14, name: '16:00', time: '16:00' },
-        { id: 15, name: '16:30', time: '16:30' },
-      ];
+   
     const useQuery = () => {
         return new URLSearchParams(location.search);
     };
-    
+    function isTimeSlotPass(slotTime,selectedDateCheck) {
+        const today =new Date()
+        const slotHour = parseInt(slotTime.split(':')[0], 10); // Lấy giờ từ chuỗi thời gian
+        const slotMinute = parseInt(slotTime.split(':')[1], 10);
+        console.log(slotTime,selectedDateCheck)
+        if (today<selectedDateCheck) {
+            console.log('case1')
+            return false;
+            
+        }
+        else if (today>selectedDateCheck) {
+            console.log('case2')
+
+            return true;
+        }
+        else {
+            if (today.getHours() > slotHour) {
+                console.log('case3')
+
+                return false;
+            }
+            
+            // Nếu giờ hiện tại bằng slotHour, kiểm tra phút
+            if (today.getHours() === slotHour && today.getMinutes() >= slotMinute) {
+                return false;
+            }
+
+            return true;
+            
+        }
+      }
     const location = useLocation();
     const query = useQuery();
     const departmentId = query.get('departmentId');
@@ -50,7 +65,8 @@ export default function Booking() {
     }, [])
     const fetchFiles = async () => {
         try {
-          const data = await fileService.getAllFiles();
+          const data = await fileService.getFilesByUserId(userId);
+          data.sort((a,b) => b.fileid-a.fileid);
           setFiles(data);
         } catch (error) {
           console.error('Error fetching files:', error.message);
@@ -74,14 +90,16 @@ export default function Booking() {
     };
     const [department, setDepartment] = useState(null); // Khởi tạo department là null ban đầu
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDateCheck, setSelectedDateCheck] = useState(new Date());
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [nestedModalContent, setNestedModalContent] = useState(null); // null, 'create', 'select'
     const [doctor,setDoctor] = useState(null)
+
     const [files, setFiles] = useState([]);
     const [file,setFile] = useState()
     const [selectedFile, setSelectedFile] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [timeSlots,setTimeSlots] = useState(timeSlotsData)
+    
     const [timeSlotsBusy,setTimeSlotsBusy] = useState([])
     const [timeSlotSelected,setTimeSlotSelected] = useState(null)
     const [newFile, setNewFile] = useState({
@@ -93,16 +111,42 @@ export default function Booking() {
       description: '',
     });
   
-
+    
+    const timeSlotsData = [
+        { id: 1, name: '8:00', time: '08:00' },
+        { id: 2, name: '8:30', time: '08:30' },
+        { id: 3, name: '9:00', time: '09:00' },
+        { id: 4, name: '9:30', time: '09:30' },
+        { id: 5, name: '10:00', time: '10:00' },
+        { id: 6, name: '10:30', time: '10:30' },
+        { id: 7, name: '11:00', time: '11:00' },
+        { id: 8, name: '11:30', time: '11:30' },
+        { id: 9, name: '13:00', time: '13:00' },
+        { id: 10, name: '13:30', time: '13:30' },
+        { id: 11, name: '14:00', time: '14:00' },
+        { id: 12, name: '14:30', time: '14:30' },
+        { id: 13, name: '15:00', time: '15:00' },
+        { id: 14, name: '15:30', time: '15:30' },
+        { id: 15, name: '16:00', time: '16:00' },
+        { id: 16, name: '16:30', time: '16:30' },
+      ];
+      
+      const [timeSlots,setTimeSlots] = useState(timeSlotsData)
+    
+      
+      
   const fetchTimeSlot = async (date) => {
+    
     const data = await appointmentService.getDoctorAppointmentsByDate(doctorId,date);
-    checkTimeSlot(data)
+    checkTimeSlot(data,new Date(date))
+    console.log(timeSlotsData);
     setTimeSlotsBusy(data)
   }
 
   const handleDateChange = (date) => {
+    
     console.log(date);
-  
+    setSelectedDateCheck(date);
     // Đảm bảo rằng ngày được định dạng chính xác theo "YYYY-MM-DD"
     const dateInput = new Date(date);
   
@@ -134,17 +178,28 @@ const handleInputChange = (e) => {
       [name]: value
     }));
   };
-const checkTimeSlot = (timeSlotsBusy) => {
+const checkTimeSlot = (timeSlotsBusy,date) => {
+    const today = new Date();
     timeSlots.forEach((timeSlot) => {
         if (timeSlotsBusy.includes(timeSlot.id)) timeSlot.isBusy=true;
         else timeSlot.isBusy=false;
+        if (isTimeSlotPass(timeSlot.time,date)) timeSlot.isPass=true;
+        else timeSlot.isPass=false;
+        console.log(timeSlot);
     })
+   
     setTimeSlots(timeSlots);
 }
 const handleConfirmAppointment = async (e) => {
     e.preventDefault()
     if (!timeSlotSelected) {
         console.error('Please select a time slot.');
+        toast.error(`Vui lòng chọn khung giờ!`);
+        return;
+    }
+    if (!file) {
+        console.error('Please select a file');
+        toast.error(`Vui lòng chọn hồ sơ!`);
         return;
     }
 
@@ -163,6 +218,7 @@ const handleConfirmAppointment = async (e) => {
     try {
         const newAppointment = await appointmentService.addAppointment(newAppointmentData);
         console.log('New Appointment:', newAppointment);
+        toast.error(`Đặt lịch thành công!`);
         // Thực hiện các hành động khác sau khi lưu thành công, ví dụ đóng modal
         closeModal();
     } catch (error) {
@@ -179,6 +235,9 @@ const handleConfirmAppointment = async (e) => {
   const closeModal = () => {
     setIsModalOpen(false);
     setNestedModalContent(null); // Reset nested modal content
+    setFile(null)
+    setTimeSlotSelected(null)
+
   };
 
   const openNestedModal = (content) => {
@@ -188,6 +247,11 @@ const handleConfirmAppointment = async (e) => {
   const closeNestedModal = () => {
     setNestedModalContent(null);
   };
+  const handleChooseFile = (file) => {
+    setFile(file)
+    closeNestedModal();
+  }
+  
 
   return (
     <div className={styles.container}>
@@ -209,24 +273,24 @@ const handleConfirmAppointment = async (e) => {
           <h3>Chọn khung giờ</h3>
           <div className={styles.timeSlotContainer}>
             {timeSlots.map((timeSlot) => (
-              <div  key={timeSlot.id} className={timeSlot.isBusy ?   styles.timeSlotBusy : (timeSlotSelected && timeSlotSelected.id ==timeSlot.id) ? styles.timeSlotSelected : styles.timeSlot} onClick={() => handleSelectTimeSlot(timeSlot)}>{timeSlot.name}{timeSlot.isBusy}</div>
+              <div  key={timeSlot.id} className={timeSlot.isBusy ?   styles.timeSlotBusy : (timeSlotSelected && timeSlotSelected.id ==timeSlot.id) ? styles.timeSlotSelected : styles.timeSlot} onClick={() => handleSelectTimeSlot(timeSlot)} style={timeSlot.isPass ? {background:'red',cursor:'none',color:'white'} : {}}>{timeSlot.name}</div>
             ))}
           </div>
           
             <div className='d-flex' style={{ alignItems: 'center' }}>
             <h3>Hồ sơ</h3>
-            {!file &&<div className={styles.btnContainer}>
+           <div className={styles.btnContainer}>
               <div>
                 <Button type="button" name="Chọn" color='#37A4F3' onClick={() => openNestedModal('select')} />
               </div>
               <div>
                 <Button type="button" name="Tạo hồ sơ" color='green' onClick={() => openNestedModal('create')} />
               </div>
-            </div>}
+            </div>
           </div>
           {file && 
-            <div>
-                <h5>{file.name}</h5>
+            <div className={styles.file}>
+                <h5>#{file.fileid} {file.name}</h5>
                 <p>Triệu chứng: {file.symptom}</p>    
           </div>}
           <form className={styles.form}>
@@ -272,7 +336,13 @@ const handleConfirmAppointment = async (e) => {
           ) : (
             <div>
               <h2>Chọn hồ sơ</h2>
-              {/* Your list of existing files goes here */}
+              <div className={styles.fileContainer}>
+              {files.map((file) => (
+                  <div onClick={() => handleChooseFile(file)}><CardFile id={file.fileid} name={file.name} symptom={file.symptom} description={file.description} birthdate={file.birthDate} createdDate={file.createdDate} gender={file.gender}/></div>
+              ))
+                  }
+
+            </div>
               <Button type="button" name="Hủy" color='#FF6347' onClick={closeNestedModal} />
             </div>
           )}

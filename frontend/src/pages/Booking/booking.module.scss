@@ -76,3 +76,17 @@
         margin-top: 1em;
     }
 }
+.fileContainer {
+    overflow: auto;
+    max-height: 70vh;
+    padding: 0 0 1em 0;
+    &>div{
+        margin-top: 1em;
+    }
+}
+.file {
+    padding: 1em 2em;
+    background: aquamarine;
+    border-radius: 10px;
+    color: #3f3f3f;
+}
