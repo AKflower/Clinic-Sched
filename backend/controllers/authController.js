@@ -3,6 +3,9 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Doctor = require('../models/doctor');
 const Admin = require('../models/admin');
+const crypto = require('crypto');
+const OTP = require('../models/OTP');
+const sendEmail = require('../utils/sendEmail');
 
 // Đăng ký tài khoản
 exports.register = async (req, res) => {
@@ -128,7 +131,16 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ message: 'Invalid or expired OTP.' });
     }
 
-    const user = await User.findById(userId);
+    let user = await User.findById(userId);
+    
+    if (!user) {
+      user = await Doctor.findById(userId);
+    }
+
+    if (!user) {
+      user = await Admin.findById(userId);
+    }
+
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
