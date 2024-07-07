@@ -1,3 +1,4 @@
+const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
@@ -8,7 +9,11 @@ const departmentRoutes = require('./routes/departments');
 const fileRoutes = require('./routes/files');
 const timeSlotRoutes = require('./routes/timeSlots');
 
+
 const app = express();
+
+// Allow all origins
+app.use(cors());
 
 // Sử dụng body-parser middleware để phân tích cú pháp JSON
 app.use(express.json());

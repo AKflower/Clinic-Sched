@@ -5,11 +5,13 @@ import Button from '../../components/button/button'
 import { useState } from 'react';
 import authService from '../../services/authService';
 import { toast } from 'react-toastify';
+import {useNavigate} from 'react-router-dom';
 
 
 
 
 export default function Register () {
+    const [isLoading,setIsLoading] = useState(false)
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -17,7 +19,8 @@ export default function Register () {
         password: '',
         reTypePassword: '',
       });
-
+      const navigate = useNavigate()
+    
       const handleChange = (e) => {
         console.log(e.target);
         const { name, value } = e.target;
@@ -30,12 +33,21 @@ export default function Register () {
     
       const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         for (const field in formData) {
             if (formData[field].trim() === '') {
-              toast.error(`${field.charAt(0).toUpperCase() + field.slice(1)} is required.`);
+              toast.error(`Vui lòng không để trống bất kì thông tin nào!`);
               return;
             }
           }
+        if (formData.password!=formData.reTypePassword) {
+            toast.error('Mật khẩu không trùng khớp nhau!');
+            setFormData((prevData) => ({
+                ...prevData,
+                reTypePassword: ''
+              }));
+              return;
+        }
         try {
           const response = await authService.register(
             formData.name,
@@ -45,8 +57,21 @@ export default function Register () {
             formData.reTypePassword,
           );
           console.log('User registered:', response);
+
+          setFormData(() => ({
+            phone: '',
+            name: '',
+            password:'',
+            email: '',
+            reTypePassword: ''
+          }));
+          toast.success('Đăng ký thành công!');
+          setTimeout(function () {
+            navigate(`/login`)
+          },1000)
         } catch (err) {
           console.error('Registration error:', err.message);
+          setIsLoading(false);
         }
       };
       
@@ -62,7 +87,7 @@ export default function Register () {
                     <Input label={'Email'} type={'email'} name="email" value={formData.email} onChange={handleChange}/>
                     <Input label={'Mật khẩu'} type={'password'} name="password" value={formData.password} onChange={handleChange}/>
                     <Input label={'Xác nhận mật khẩu'} type={'password'} name="reTypePassword" value={formData.reTypePassword} onChange={handleChange}/>
-                    <Button name={'Đăng ký'} onClick={handleSubmit}></Button>
+                    <Button name={'Đăng ký'} onClick={handleSubmit} disabled={isLoading}></Button>
                     
             </form>
            

@@ -45,6 +45,7 @@ exports.getAllDepartments = async (req, res) => {
 
 exports.getDepartmentById = async (req, res) => {
   try {
+    
     const department = await Department.findById(req.params.id);
     res.status(200).json(department);
   } catch (err) {

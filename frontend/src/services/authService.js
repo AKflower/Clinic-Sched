@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Set the base URL for the API
-const API_URL = 'http://localhost:3001';
+const API_URL = 'http://localhost:3001/api/auth';
 
 // Register user
 const register = async (name, phone, email, password) => {

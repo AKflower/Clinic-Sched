@@ -5,25 +5,37 @@ const fileSchema = new mongoose.Schema({
   fileid: {
     type: Number
   },
+  name: {
+    type: String,
+    required: true,
+  },
+  gender: {
+    type: String,
+    required: true,
+  },
+  birthDate: {
+    type: Date,
+    required: true,
+  },
   symptom: {
     type: String,
     required: true
   },
   description: {
     type: String,
-    required: true
+    default: null,
   },
-  date: {
+  createdDate: {
     type: Date,
     required: true
   },
   status: {
-    type: String,
+    type: Number,
     required: true
   },
   result: {
     type: String,
-    required: true
+    default: null
   }
 });
 

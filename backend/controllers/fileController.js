@@ -1,8 +1,9 @@
 const File = require('../models/file');
 
 exports.addFile = async (req, res) => {
-  const { symptom, description, date, status, result } = req.body;
-  const newFile = new File({ symptom, description, date, status, result });
+  const { name, gender, birthDate, symptom, description } = req.body;
+  const createdDate = new Date();
+  const newFile = new File({ name, gender, birthDate,  symptom, description, createdDate, status: 0 });
 
   try {
     const savedFile = await newFile.save();
