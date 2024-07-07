@@ -12,66 +12,91 @@ const axiosInstance = axios.create({
 });
 
 const appointmentService = {
-    getAllAppointments: async () => {
-        try {
-          const response = await axiosInstance.get('/appointments');
-          return response.data;
-        } catch (error) {
-          console.error('Error fetching appointments:', error.message);
-          throw error;
-        }
-      },
-    
-      getAppointmentById: async (id) => {
-        try {
-          const response = await axiosInstance.get(`/appointments/${id}`);
-          return response.data;
-        } catch (error) {
-          console.error('Error fetching appointment:', error.message);
-          throw error;
-        }
-      },
-    
-      addAppointment: async (appointmentData) => {
-        try {
-          const response = await axiosInstance.post('/appointments', appointmentData);
-          return response.data;
-        } catch (error) {
-          console.error('Error adding appointment:', error.message);
-          throw error;
-        }
-      },
-    
-      updateAppointment: async (id, appointmentData) => {
-        try {
-          const response = await axiosInstance.put(`/appointments/${id}`, appointmentData);
-          return response.data;
-        } catch (error) {
-          console.error('Error updating appointment:', error.message);
-          throw error;
-        }
-      },
-    
-      deleteAppointment: async (id) => {
-        try {
-          const response = await axiosInstance.delete(`/appointments/${id}`);
-          return response.data;
-        } catch (error) {
-          console.error('Error deleting appointment:', error.message);
-          throw error;
-        }
-      },
-    
-      getDoctorAppointmentsByDate: async (doctorId, date) => {
-        try {
-          const response = await axiosInstance.get(`/appointments/doctor/${doctorId}/times`, {
-            params: { date }
-          });
-          return response.data;
-        } catch (error) {
-          console.error('Error fetching doctor appointments:', error.message);
-          throw error;
-        }
-      }
+  getAllAppointments: async () => {
+    try {
+      const response = await axiosInstance.get('/appointments');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching appointments:', error.message);
+      throw error;
+    }
+  },
+
+  getAppointmentById: async (id) => {
+    try {
+      const response = await axiosInstance.get(`/appointments/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching appointment:', error.message);
+      throw error;
+    }
+  },
+
+  addAppointment: async (appointmentData) => {
+    try {
+      const response = await axiosInstance.post('/appointments', appointmentData);
+      return response.data;
+    } catch (error) {
+      console.error('Error adding appointment:', error.message);
+      throw error;
+    }
+  },
+
+  updateAppointment: async (id, appointmentData) => {
+    try {
+      const response = await axiosInstance.put(`/appointments/${id}`, appointmentData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating appointment:', error.message);
+      throw error;
+    }
+  },
+
+  deleteAppointment: async (id) => {
+    try {
+      const response = await axiosInstance.delete(`/appointments/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting appointment:', error.message);
+      throw error;
+    }
+  },
+
+  getDoctorAppointmentsByDate: async (doctorId, date) => {
+    try {
+      const response = await axiosInstance.get(`/appointments/doctor/${doctorId}`, {
+        params: { date }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching doctor appointments:', error.message);
+      throw error;
+    }
+  },
+
+  getDoctorAppointmentsTimeByDate: async (doctorId, date) => {
+    try {
+      const response = await axiosInstance.get(`/appointments/doctor/${doctorId}/times`, {
+        params: { date }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching doctor appointment times:', error.message);
+      throw error;
+    }
+  },
+
+  getUserAppointmentsByDate: async (userId, date) => {
+    try {
+      const response = await axiosInstance.get(`/appointments/user/${userId}`, {
+        params: { date }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user appointments:', error.message);
+      throw error;
+    }
+  }
 }
+
 export default appointmentService;
