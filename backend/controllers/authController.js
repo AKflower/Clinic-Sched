@@ -1,10 +1,11 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const Doctor = require('../models/doctor');
+const Admin = require('../models/admin');
 
 // Đăng ký tài khoản
 exports.register = async (req, res) => {
-  console.log('Test',req.body)
   const { name, phone, email, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = new User({ name, phone, email, password: hashedPassword, role: 'user' });
@@ -20,14 +21,32 @@ exports.register = async (req, res) => {
 // Đăng nhập
 exports.login = async (req, res) => {
   const { phone, password } = req.body;
-  const user = await User.findOne({ phone });
-  if (!user) return res.status(400).json({ message: 'Invalid phone or password.' });
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).json({ message: 'Invalid phone or password.' });
+  try {
+    let user = await User.findOne({ phone });
+    
+    if (!user) {
+      user = await Doctor.findOne({ phone });
+    }
 
-  const token = jwt.sign({ _id: user._id, role: user.role }, 'dung0804');
-  res.json({ token, id: user._id, name: user.name });
+    if (!user) {
+      user = await Admin.findOne({ phone });
+    }
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid phone or password.' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid phone or password.' });
+    }
+
+    const token = jwt.sign({ _id: user._id, role: user.role }, 'dung0804');
+    res.json({ token, id: user._id, name: user.name, role: user.role });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 exports.changePassword = async (req, res) => {

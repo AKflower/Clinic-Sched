@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
+const adminRoutes = require('./routes/admins');
 const doctorRoutes = require('./routes/doctors');
 const appointmentRoutes = require('./routes/appointments');
 const departmentRoutes = require('./routes/departments');
@@ -31,6 +32,7 @@ mongoose.connect(mongoURI, {
 // Định nghĩa các route
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/admins', adminRoutes);
 app.use('/api/doctors', doctorRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/departments', departmentRoutes);
