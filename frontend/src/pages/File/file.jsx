@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import fileService from '../../services/fileService';
 import Modal from 'react-modal';
 import Input from '../../components/input/input';
+import Select from '../../components/select/select'
 
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
 
@@ -15,7 +16,7 @@ export default function File () {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newFile, setNewFile] = useState({
       name: '',
-      gender: '',
+      gender: 'Nam',
       birthDate: '',  
       symptom: '',
       description: '',
@@ -118,7 +119,7 @@ export default function File () {
         <h2>Thêm Hồ Sơ Mới</h2>
         <form className={styles.form}>
             <Input label={'Tên'} name={'name'} value={newFile.name} onChange={handleInputChange}/>
-            <Input label={'Giới tính'} name={'gender'} value={newFile.gender} onChange={handleInputChange}/>
+            <Select label={'Giới tính'} options={[{value: 'Nam'},{value:'Nữ'}]} value={newFile.gender} onChange={handleInputChange} name={'gender'}/>
             <Input label={'Ngày sinh'} name={'birthDate'} type='date' value={newFile.birthDate} onChange={handleInputChange}/>
             <Input label={'Triệu chứng'} name={'symptom'} value={newFile.symptom} onChange={handleInputChange}/>
             <Input label={'Mô tả'} name={'description'} value={newFile.description} onChange={handleInputChange} isTextArea={true}/>

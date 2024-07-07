@@ -1,11 +1,12 @@
 import styles from './doctors.module.scss'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CardDoctor from '../../components/card/cardDoctor';
 import { useState, useEffect } from 'react';
 import departmentService from '../../services/departmentService';
 import doctorService from '../../services/doctorService';
 
 export default function Doctors() {
+
     const [department, setDepartment] = useState(null); // Khởi tạo department là null ban đầu
     const [doctors, setDoctors] = useState([]);
     const location = useLocation();
@@ -50,7 +51,7 @@ export default function Doctors() {
             <h1>Khám {department.name.toLowerCase()}</h1>
             <div className={styles.doctorsContainer}>
                {doctors.map((doctor) => (
-                <CardDoctor doctor={doctor} />
+                <CardDoctor doctor={doctor} departmentId={id} departmentName={department.name}/>
                ))}
                
                 

@@ -3,7 +3,8 @@ import styles from './cardFile.module.scss';
 export default function CardFile ({name,gender,id,symptom,description,birthdate,createdDate}) {
     return (
         <div className={styles.container}>
-            <h4>{name} - {gender} - {formatDate(birthdate)}</h4>
+            <h4>{name}</h4>
+            <h5>{gender} - {formatDate(birthdate)}</h5>
             <div className={styles.field}>
                 <div>Mã hồ sơ:</div>
                 <div>#{id}</div>

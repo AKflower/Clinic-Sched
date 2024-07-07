@@ -32,6 +32,9 @@ export default function Login () {
           console.log('Login success:', response);
     
           localStorage.setItem('token', response.token);
+          localStorage.setItem('name', response.name);
+          localStorage.setItem('id',response._id);
+          localStorage.setItem('role',response.role);
         //   localStorage.setItem('id',data.employee_id)
     
           // Hiển thị thông báo thành công

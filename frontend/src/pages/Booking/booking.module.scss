@@ -1,19 +1,4 @@
-.container{
-    .button {
-        display: flex;
-        justify-content: flex-end;
-        margin: 0 0 1em 0;
-    }
-    .fileContainer{
-        display: flex;
-        flex-direction: column;
-        gap:1em;
-        background-color: #F9F9F9;
-        border-radius: 10px;
-        padding: 1em;
-        
-    }
-}
+
 .modal {
     position: fixed;
     top: 50%;
@@ -44,7 +29,29 @@
         margin-left: 1em;
     }
 }
+.timeSlotContainer{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: .5em;
+    .timeSlot{
+        background-color: silver;
+        padding: .5em;
+        text-align: center;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+}
+.btnContainer{
+    display: flex;
+    margin: 0 0 0 1em;
+    column-gap: 1em;
+    div {
+        margin: 0;
+        width: 5em;
+    }
+}
 .form{
+    
     div {
         margin-top: 1em;
     }
