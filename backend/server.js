@@ -9,9 +9,12 @@ const appointmentRoutes = require('./routes/appointments');
 const departmentRoutes = require('./routes/departments');
 const fileRoutes = require('./routes/files');
 const timeSlotRoutes = require('./routes/timeSlots');
-
-
+const http = require('http');
+const socketIo = require('socket.io');
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+const path = require('path');
 
 // Allow all origins
 app.use(cors());
@@ -38,6 +41,29 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/timeSlots', timeSlotRoutes);
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+io.on('connection', socket => {
+  console.log('A user connected');
+
+  socket.on('offer', payload => {
+    io.to(payload.target).emit('offer', payload);
+  });
+
+  socket.on('answer', payload => {
+    io.to(payload.target).emit('answer', payload);
+  });
+
+  socket.on('ice-candidate', incoming => {
+    io.to(incoming.target).emit('ice-candidate', incoming.candidate);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
 
 // Bắt đầu server
 const PORT = process.env.PORT || 3001;
