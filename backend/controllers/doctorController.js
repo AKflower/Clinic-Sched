@@ -65,6 +65,7 @@ exports.getDoctorsWithAvailability = async (req, res) => {
 
   function findTimeSlot(time) {
     const [hours, minutes] = time.split(':').map(Number);
+
     const currentTime = new Date();
     currentTime.setHours(hours, minutes, 0, 0);
   
@@ -74,7 +75,7 @@ exports.getDoctorsWithAvailability = async (req, res) => {
       slotTime.setHours(slotHours, slotMinutes, 0, 0);
   
       if (currentTime <= slotTime) {
-        return timeSlots[i].id;
+        return timeSlots[i-1].id;
       }
     }
   
@@ -100,6 +101,7 @@ exports.getDoctorsWithAvailability = async (req, res) => {
   ];
 
   const timeId = findTimeSlot(time);
+  console.log(timeId)
 
   try {
     // Tìm tất cả các bác sĩ trong department
