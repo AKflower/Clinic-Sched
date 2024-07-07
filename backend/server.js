@@ -7,6 +7,7 @@ const doctorRoutes = require('./routes/doctors');
 const appointmentRoutes = require('./routes/appointments');
 const departmentRoutes = require('./routes/departments');
 const fileRoutes = require('./routes/files');
+const timeSlotRoutes = require('./routes/timeSlots');
 
 
 const app = express();
@@ -34,6 +35,7 @@ app.use('/api/doctors', doctorRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/files', fileRoutes);
+app.use('/api/timeSlots', timeSlotRoutes);
 
 // Bắt đầu server
 const PORT = process.env.PORT || 3001;

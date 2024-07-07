@@ -1,4 +1,4 @@
-const Appointment = require('../models/Appointment');
+const Appointment = require('../models/appointment');
 const User = require('../models/User');
 const Doctor = require('../models/doctor');
 
@@ -21,9 +21,9 @@ exports.getAppointmentById = async (req, res) => {
 };
 
 exports.addAppointment = async (req, res) => {
-  const { userId, doctorId, date, time, status, note } = req.body;
+  const { userId, doctorId, fileId, date, timeId, status, note } = req.body;
 
-  const newAppointment = new Appointment({ userId, doctorId, date, time, status, note });
+  const newAppointment = new Appointment({ userId, doctorId, fileId, date, timeId, status, note });
 
   try {
     const savedAppointment = await newAppointment.save();

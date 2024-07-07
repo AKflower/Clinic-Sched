@@ -1,5 +1,6 @@
 const Doctor = require('../models/doctor');
 const Appointment = require('../models/Appointment');
+const bcrypt = require('bcryptjs');
 
 exports.getAllDoctors = async (req, res) => {
   try {
@@ -20,9 +21,9 @@ exports.getDoctorById = async (req, res) => {
 };
 
 exports.addDoctor = async (req, res) => {
-  const { name, phone, email, password, department } = req.body;
+  const { name, phone, gender, email, password, department } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newDoctor = new Doctor({ name, phone, email, password: hashedPassword, department });
+  const newDoctor = new Doctor({ name, phone, gender, email, password: hashedPassword, department });
 
   try {
     const savedDoctor = await newDoctor.save();
