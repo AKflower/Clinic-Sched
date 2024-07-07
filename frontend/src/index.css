@@ -20,3 +20,19 @@ a {
   justify-content: center;
   align-items: center;
 }
+.react-calendar {
+    width: 90% !important;
+    height: 50vh !important;
+    border-radius: 10px !important;
+    box-shadow: 1px 1px 5px silver !important;
+    background: #fafffe !important;
+    font-family: 'Montserrat' !important;
+    
+    max-width: 100% !important;
+    
+    border: 1px solid #a0a096 !important;
+    line-height: 1.125em !important;
+}
+.react-calendar__navigation__label__labelText, .react-calendar__navigation__label__labelText--from{
+  font-family: Montserrat !important;
+}

@@ -9,6 +9,7 @@ import UserProfile from './components/userProfile/userProfile';
 import Home from './pages/Home/home';
 import Doctors from './pages/Doctors/doctors';
 import File from './pages/File/file';
+import Booking from './pages/Booking/booking'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -35,6 +36,7 @@ const Main = () => {
             <Route path="/home" element={<Home />} />
             <Route path="/home/doctors" element={<Doctors />} />
             <Route path="/file" element={<File />} />
+            <Route path="/home/doctors/booking" element={<Booking />} />
           </Routes>
         </div>
       </div>
