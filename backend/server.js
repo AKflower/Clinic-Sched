@@ -9,18 +9,19 @@ const appointmentRoutes = require('./routes/appointments');
 const departmentRoutes = require('./routes/departments');
 const fileRoutes = require('./routes/files');
 const timeSlotRoutes = require('./routes/timeSlots');
-const http = require('http');
-const socketIo = require('socket.io');
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
-const path = require('path');
+let server = require( 'http' ).Server( app );
+let io = require( 'socket.io' )( server );
+let stream = require( './wp/stream' );
+let path = require( 'path' );
 
 // Allow all origins
 app.use(cors());
 
 // Sử dụng body-parser middleware để phân tích cú pháp JSON
 app.use(express.json());
+
+
 
 // Kết nối tới MongoDB Atlas hoặc local MongoDB
 const mongoURI = 'mongodb+srv://tranquocdungb4:HwnRECAExdn4vLfk@cluster0.jl2mgf9.mongodb.net/Clinic?appName=Cluster0';
@@ -43,28 +44,13 @@ app.use('/api/files', fileRoutes);
 app.use('/api/timeSlots', timeSlotRoutes);
 
 // Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use( '/assets', express.static( path.join( __dirname, 'assets' ) ) );
 
-io.on('connection', socket => {
-  console.log('A user connected');
-
-  socket.on('offer', payload => {
-    io.to(payload.target).emit('offer', payload);
-  });
-
-  socket.on('answer', payload => {
-    io.to(payload.target).emit('answer', payload);
-  });
-
-  socket.on('ice-candidate', incoming => {
-    io.to(incoming.target).emit('ice-candidate', incoming.candidate);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
-});
+app.get( '/', ( req, res ) => {
+    res.sendFile( __dirname + '/index.html' );
+} );
+io.of( '/stream' ).on( 'connection', stream );
 
 // Bắt đầu server
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
