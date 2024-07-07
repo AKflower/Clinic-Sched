@@ -104,6 +104,7 @@ exports.getDoctorsWithAvailability = async (req, res) => {
   console.log(timeId)
 
   try {
+   
     // Tìm tất cả các bác sĩ trong department
     const doctorsInDepartment = await Doctor.find({ department: departmentId }).populate('department', 'name');
 
@@ -115,7 +116,10 @@ exports.getDoctorsWithAvailability = async (req, res) => {
       const isBusy = appointmentsInTimeSlot.some(appointment => 
         appointment.doctorId.toString() === doctor._id.toString()
       );
-
+      if (timeId==-1) return {
+        ...doctor._doc,
+        isBusy:true
+      };
       return {
         ...doctor._doc,
         isBusy
