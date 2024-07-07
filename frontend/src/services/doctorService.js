@@ -65,6 +65,7 @@ const doctorService = {
   // Lấy danh sách Doctors theo departmentId và tính sẵn sàng (availability)
   getDoctorsWithAvailability: async (departmentId, date, time) => {
     try {
+        console.log(departmentId);
       const response = await axiosInstance.get(`/doctors/department/${departmentId}/availability`, {
         params: {
           date,

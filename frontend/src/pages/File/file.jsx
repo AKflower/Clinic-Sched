@@ -10,6 +10,7 @@ import Select from '../../components/select/select'
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
 
 export default function File () {
+    const userId=localStorage.getItem('id');
     const [files, setFiles] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -28,7 +29,8 @@ export default function File () {
   
     const fetchFiles = async () => {
       try {
-        const data = await fileService.getAllFiles();
+        const data = await fileService.getFilesByUserId(userId);
+        data.sort((a,b) => b.fileid-a.fileid);
         setFiles(data);
       } catch (error) {
         console.error('Error fetching files:', error.message);
@@ -104,7 +106,7 @@ export default function File () {
             </div>
             <div className={styles.fileContainer}>
                 {files.map((file) => (
-                    <CardFile id={'121'} name={file.name} symptom={file.symptom} description={file.description} birthdate={file.birthDate} createdDate={file.createdDate} gender={file.gender}/>
+                    <CardFile id={file.fileid} name={file.name} symptom={file.symptom} description={file.description} birthdate={file.birthDate} createdDate={file.createdDate} gender={file.gender}/>
                 ))
                     }
 
