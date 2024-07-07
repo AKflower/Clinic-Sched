@@ -39,6 +39,26 @@
         text-align: center;
         border-radius: 5px;
         cursor: pointer;
+        &:hover{
+            background-color: rgb(70, 70, 70);
+            color:white;
+        }
+    }
+    .timeSlotBusy{
+        background-color: rgb(243, 136, 55);
+        padding: .5em;
+        color:white;
+        text-align: center;
+        border-radius: 5px;
+  
+    }
+    .timeSlotSelected{
+        background-color: rgb(86, 243, 55);
+        padding: .5em;
+        color:white;
+        text-align: center;
+        border-radius: 5px;
+        cursor: pointer;
     }
 }
 .btnContainer{
