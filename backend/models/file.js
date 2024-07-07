@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
+const Schema = mongoose.Schema;
 
 const fileSchema = new mongoose.Schema({
   fileid: {
     type: Number
   },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   name: {
     type: String,
     required: true,
