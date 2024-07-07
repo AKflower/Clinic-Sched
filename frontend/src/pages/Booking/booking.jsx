@@ -8,13 +8,16 @@ import Button from '../../components/button/button';
 import fileService from '../../services/fileService';
 import Modal from 'react-modal';
 import Input from '../../components/input/input';
-import Select from '../../components/select/select'
+import Select from '../../components/select/select';
+import appointmentService from '../../services/appointment';
+
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
 
 export default function Booking() {
     const useQuery = () => {
         return new URLSearchParams(location.search);
     };
+    const user_id = localStorage.getItem('id');
     const location = useLocation();
     const query = useQuery();
     const departmentId = query.get('departmentId');
@@ -57,6 +60,8 @@ export default function Booking() {
     const [file,setFile] = useState()
     const [selectedFile, setSelectedFile] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [timeSlotsBusy,setTimeSlotsBusy] = useState([])
+    const [timeSlotSelected,setTimeSlotSelected] = useState(null)
     const [newFile, setNewFile] = useState({
       name: '',
       gender: 'Nam',
@@ -83,9 +88,26 @@ export default function Booking() {
     { id: 15, name: '16:30', time: '16:30' },
   ];
 
+  const fetchTimeSlot = async (date) => {
+    const data = await appointmentService.getDoctorAppointmentsByDate(doctorId,date);
+    checkTimeSlot(data)
+    setTimeSlotsBusy(data)
+  }
+
   const handleDateChange = (date) => {
+    console.log(date);
+    const dateInput = new Date(date)
+
+const year = dateInput.getFullYear();
+const month = String(dateInput.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
+const day = String(dateInput.getDate()).padStart(2, '0');
+
+const formattedDate = `${year}-${month}-${day}`;
     setSelectedDate(date);
+    fetchTimeSlot(formattedDate);
+    
     openModal();
+
   };
   const handleAddFile = async (e) => {
     e.preventDefault();
@@ -105,7 +127,43 @@ const handleInputChange = (e) => {
       [name]: value
     }));
   };
+const checkTimeSlot = (timeSlotsBusy) => {
+    timeSlots.forEach((timeSlot) => {
+        if (timeSlotsBusy.find((item) => item == timeSlot.id)) timeSlot.isBusy=true;
+        else timeSlot.isBusy=false;
+    })
+}
+const handleConfirmAppointment = async (e) => {
+    e.preventDefault()
+    if (!timeSlotSelected) {
+        console.error('Please select a time slot.');
+        return;
+    }
 
+    // Thay đổi userId và doctorId tùy vào cách bạn lưu thông tin người dùng và bác sĩ
+
+    const newAppointmentData = {
+        userId: user_id,
+        doctorId,
+        fileId: file._id,
+        date: selectedDate.toISOString().split('T')[0], // Chuyển đổi ngày thành chuỗi ISO
+        timeId: timeSlotSelected.id,
+        status: 'await', // Hoặc giá trị mặc định khác tùy vào yêu cầu của bạn
+        note: '', // Ghi chú có thể để trống ban đầu
+    };
+
+    try {
+        const newAppointment = await appointmentService.addAppointment(newAppointmentData);
+        console.log('New Appointment:', newAppointment);
+        // Thực hiện các hành động khác sau khi lưu thành công, ví dụ đóng modal
+        closeModal();
+    } catch (error) {
+        console.error('Error adding appointment:', error.message);
+    }
+};
+  const handleSelectTimeSlot = (timeSlot) => {
+    setTimeSlotSelected(timeSlot);
+  }
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -138,12 +196,12 @@ const handleInputChange = (e) => {
         overlayClassName={styles.overlay}
       >
         <h2>Đặt Lịch</h2>
-        <div>Ngày: {selectedDate.toLocaleDateString()} - Bác sĩ {doctor && doctor.name}</div>
+        <div>Thời gian: {timeSlotSelected && timeSlotSelected.time+','} {selectedDate.toLocaleDateString()} - Bác sĩ {doctor && doctor.name}</div>
         
           <h3>Chọn khung giờ</h3>
           <div className={styles.timeSlotContainer}>
             {timeSlots.map((timeSlot) => (
-              <div className={styles.timeSlot}>{timeSlot.name}</div>
+              <div  key={timeSlot.id} className={timeSlot.isBusy ?   styles.timeSlotBusy : (timeSlotSelected && timeSlotSelected.id ==timeSlot.id) ? styles.timeSlotSelected : styles.timeSlot} onClick={() => handleSelectTimeSlot(timeSlot)}>{timeSlot.name}</div>
             ))}
           </div>
           
@@ -169,7 +227,7 @@ const handleInputChange = (e) => {
               <Button type="button" name="Hủy" color='#FF6347' onClick={closeModal} />
             </div>
             <div>
-              <Button type="button" name="Xác nhận" color='#37A4F3' />
+              <Button type="button" name="Xác nhận" color='#37A4F3' onClick={handleConfirmAppointment}/>
             </div>
           </div>
         </form>

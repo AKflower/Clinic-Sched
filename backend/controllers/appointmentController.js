@@ -1,6 +1,8 @@
-const Appointment = require('../models/appointment');
+const Appointment = require('../models/Appointment');
 const User = require('../models/User');
 const Doctor = require('../models/doctor');
+const mongoose = require('mongoose');
+
 
 exports.getAllAppointments = async (req, res) => {
   try {
@@ -22,7 +24,7 @@ exports.getAppointmentById = async (req, res) => {
 
 exports.addAppointment = async (req, res) => {
   const { userId, doctorId, fileId, date, timeId, status, note } = req.body;
-
+  
   const newAppointment = new Appointment({ userId, doctorId, fileId, date, timeId, status, note });
 
   try {
@@ -80,9 +82,10 @@ exports.deleteAppointment = async (req, res) => {
 };
 
 exports.getDoctorAppointmentsByDate = async (req, res) => {
+  
   const { doctorId } = req.params;
   const { date } = req.query;
-
+  console.log(doctorId,date);
   try {
     // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
     const appointments = await Appointment.find({ doctorId, date });
