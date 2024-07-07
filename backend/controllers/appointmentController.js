@@ -81,11 +81,10 @@ exports.deleteAppointment = async (req, res) => {
   }
 };
 
-exports.getDoctorAppointmentsByDate = async (req, res) => {
+exports.getDoctorAppointmentsTimeByDate = async (req, res) => {
   
   const { doctorId } = req.params;
   const { date } = req.query;
-  console.log(doctorId,date);
   try {
     // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
     const appointments = await Appointment.find({ doctorId, date });
@@ -94,6 +93,35 @@ exports.getDoctorAppointmentsByDate = async (req, res) => {
     const appointmentTimes = appointments.map(appointment => appointment.timeId);
 
     res.status(200).json(appointmentTimes);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getDoctorAppointmentsByDate = async (req, res) => {
+  
+  const { doctorId } = req.params;
+  const { date } = req.query;
+  console.log(doctorId,date);
+  try {
+    // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
+    const appointments = await Appointment.find({ doctorId, date });
+
+    res.status(200).json(appointments);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getUserAppointmentsByDate = async (req, res) => {
+  
+  const { userId } = req.params;
+  const { date } = req.query;
+  try {
+    // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
+    const appointments = await Appointment.find({ userId, date });
+
+    res.status(200).json(appointments);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

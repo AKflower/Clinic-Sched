@@ -1,5 +1,5 @@
 const Doctor = require('../models/doctor');
-const Appointment = require('../models/appointment');
+const Appointment = require('../models/Appointment');
 const bcrypt = require('bcryptjs');
 
 exports.getAllDoctors = async (req, res) => {
