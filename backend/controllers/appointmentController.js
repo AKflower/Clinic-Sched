@@ -106,7 +106,7 @@ exports.getDoctorAppointmentsByDate = async (req, res) => {
     // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
     const appointments = await Appointment.find({ doctorId, date });
 
-    res.status(200).json(appointments);
+    res.status(200).json(appointments).populate('name','phone', 'email', 'gender', 'department', 'appointments');
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -118,7 +118,7 @@ exports.getUserAppointmentsByDate = async (req, res) => {
   const { date } = req.query;
   try {
     // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
-    const appointments = await Appointment.find({ userId, date });
+    const appointments = await Appointment.find({ userId, date }).populate('name','phone', 'email', 'gender', 'department', 'appointments');;
 
     res.status(200).json(appointments);
   } catch (err) {
