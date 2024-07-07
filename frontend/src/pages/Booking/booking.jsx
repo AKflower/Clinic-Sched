@@ -13,11 +13,32 @@ import appointmentService from '../../services/appointment';
 
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
 
+
 export default function Booking() {
+    const userId = localStorage.getItem('id');
+    console.log(userId)
+    const timeSlotsData = [
+        { id: 0, name: '8:00', time: '08:00'},
+        { id: 1, name: '8:30', time: '08:30' },
+        { id: 2, name: '9:00', time: '09:00' },
+        { id: 3, name: '9:30', time: '09:30' },
+        { id: 4, name: '10:00', time: '10:00' },
+        { id: 5, name: '10:30', time: '10:30' },
+        { id: 6, name: '11:00', time: '11:00' },
+        { id: 7, name: '11:30', time: '11:30' },
+        { id: 8, name: '13:00', time: '13:00' },
+        { id: 9, name: '13:30', time: '13:30' },
+        { id: 10, name: '14:00', time: '14:00' },
+        { id: 11, name: '14:30', time: '14:30' },
+        { id: 12, name: '15:00', time: '15:00' },
+        { id: 13, name: '15:30', time: '15:30' },
+        { id: 14, name: '16:00', time: '16:00' },
+        { id: 15, name: '16:30', time: '16:30' },
+      ];
     const useQuery = () => {
         return new URLSearchParams(location.search);
     };
-    const user_id = localStorage.getItem('id');
+    
     const location = useLocation();
     const query = useQuery();
     const departmentId = query.get('departmentId');
@@ -60,33 +81,18 @@ export default function Booking() {
     const [file,setFile] = useState()
     const [selectedFile, setSelectedFile] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [timeSlots,setTimeSlots] = useState(timeSlotsData)
     const [timeSlotsBusy,setTimeSlotsBusy] = useState([])
     const [timeSlotSelected,setTimeSlotSelected] = useState(null)
     const [newFile, setNewFile] = useState({
+        userId: userId,
       name: '',
       gender: 'Nam',
       birthDate: '',  
       symptom: '',
       description: '',
     });
-  const timeSlots = [
-    { id: 0, name: '8:00', time: '08:00' },
-    { id: 1, name: '8:30', time: '08:30' },
-    { id: 2, name: '9:00', time: '09:00' },
-    { id: 3, name: '9:30', time: '09:30' },
-    { id: 4, name: '10:00', time: '10:00' },
-    { id: 5, name: '10:30', time: '10:30' },
-    { id: 6, name: '11:00', time: '11:00' },
-    { id: 7, name: '11:30', time: '11:30' },
-    { id: 8, name: '13:00', time: '13:00' },
-    { id: 9, name: '13:30', time: '13:30' },
-    { id: 10, name: '14:00', time: '14:00' },
-    { id: 11, name: '14:30', time: '14:30' },
-    { id: 12, name: '15:00', time: '15:00' },
-    { id: 13, name: '15:30', time: '15:30' },
-    { id: 14, name: '16:00', time: '16:00' },
-    { id: 15, name: '16:30', time: '16:30' },
-  ];
+  
 
   const fetchTimeSlot = async (date) => {
     const data = await appointmentService.getDoctorAppointmentsByDate(doctorId,date);
@@ -96,18 +102,19 @@ export default function Booking() {
 
   const handleDateChange = (date) => {
     console.log(date);
-    const dateInput = new Date(date)
-
-const year = dateInput.getFullYear();
-const month = String(dateInput.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
-const day = String(dateInput.getDate()).padStart(2, '0');
-
-const formattedDate = `${year}-${month}-${day}`;
-    setSelectedDate(date);
+  
+    // Đảm bảo rằng ngày được định dạng chính xác theo "YYYY-MM-DD"
+    const dateInput = new Date(date);
+  
+    const year = dateInput.getFullYear();
+    const month = String(dateInput.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
+    const day = String(dateInput.getDate()).padStart(2, '0');
+  
+    const formattedDate = `${year}-${month}-${day}`;
+    setSelectedDate(formattedDate);
+  
     fetchTimeSlot(formattedDate);
-    
     openModal();
-
   };
   const handleAddFile = async (e) => {
     e.preventDefault();
@@ -129,9 +136,10 @@ const handleInputChange = (e) => {
   };
 const checkTimeSlot = (timeSlotsBusy) => {
     timeSlots.forEach((timeSlot) => {
-        if (timeSlotsBusy.find((item) => item == timeSlot.id)) timeSlot.isBusy=true;
+        if (timeSlotsBusy.includes(timeSlot.id)) timeSlot.isBusy=true;
         else timeSlot.isBusy=false;
     })
+    setTimeSlots(timeSlots);
 }
 const handleConfirmAppointment = async (e) => {
     e.preventDefault()
@@ -141,12 +149,12 @@ const handleConfirmAppointment = async (e) => {
     }
 
     // Thay đổi userId và doctorId tùy vào cách bạn lưu thông tin người dùng và bác sĩ
-
+    // const date = formatDate(selectedDate)
     const newAppointmentData = {
-        userId: user_id,
+        userId,
         doctorId,
         fileId: file._id,
-        date: selectedDate.toISOString().split('T')[0], // Chuyển đổi ngày thành chuỗi ISO
+        date: selectedDate,
         timeId: timeSlotSelected.id,
         status: 'await', // Hoặc giá trị mặc định khác tùy vào yêu cầu của bạn
         note: '', // Ghi chú có thể để trống ban đầu
@@ -196,12 +204,12 @@ const handleConfirmAppointment = async (e) => {
         overlayClassName={styles.overlay}
       >
         <h2>Đặt Lịch</h2>
-        <div>Thời gian: {timeSlotSelected && timeSlotSelected.time+','} {selectedDate.toLocaleDateString()} - Bác sĩ {doctor && doctor.name}</div>
+        <div>Thời gian: {timeSlotSelected && timeSlotSelected.time+','} {selectedDate} - Bác sĩ {doctor && doctor.name}</div>
         
           <h3>Chọn khung giờ</h3>
           <div className={styles.timeSlotContainer}>
             {timeSlots.map((timeSlot) => (
-              <div  key={timeSlot.id} className={timeSlot.isBusy ?   styles.timeSlotBusy : (timeSlotSelected && timeSlotSelected.id ==timeSlot.id) ? styles.timeSlotSelected : styles.timeSlot} onClick={() => handleSelectTimeSlot(timeSlot)}>{timeSlot.name}</div>
+              <div  key={timeSlot.id} className={timeSlot.isBusy ?   styles.timeSlotBusy : (timeSlotSelected && timeSlotSelected.id ==timeSlot.id) ? styles.timeSlotSelected : styles.timeSlot} onClick={() => handleSelectTimeSlot(timeSlot)}>{timeSlot.name}{timeSlot.isBusy}</div>
             ))}
           </div>
           
@@ -272,4 +280,10 @@ const handleConfirmAppointment = async (e) => {
       )}
     </div>
   );
+}
+function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
 }
