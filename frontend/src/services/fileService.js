@@ -51,6 +51,14 @@ const fileService = {
     } catch (error) {
       throw new Error(error.response?.data?.message || error.message);
     }
+  },
+  getFilesByUserId: async (userId) => {
+    try {
+      const response = await axiosInstance.get(`/files/user/${userId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
   }
 };
 
