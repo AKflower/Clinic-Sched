@@ -88,7 +88,7 @@ exports.getDoctorAppointmentsByDate = async (req, res) => {
     const appointments = await Appointment.find({ doctorId, date });
 
     // Lấy ra các thời gian của cuộc hẹn
-    const appointmentTimes = appointments.map(appointment => appointment.time);
+    const appointmentTimes = appointments.map(appointment => appointment.timeId);
 
     res.status(200).json(appointmentTimes);
   } catch (err) {
