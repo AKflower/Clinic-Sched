@@ -12,6 +12,7 @@ import File from './pages/File/file';
 import Booking from './pages/Booking/booking'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Appointment from './pages/Appointment/appointment'
 
 const Main = () => {
   const location = useLocation();
@@ -37,6 +38,7 @@ const Main = () => {
             <Route path="/home/doctors" element={<Doctors />} />
             <Route path="/file" element={<File />} />
             <Route path="/home/doctors/booking" element={<Booking />} />
+            <Route path='/appointment' element={<Appointment />} />
           </Routes>
         </div>
       </div>

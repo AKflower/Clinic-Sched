@@ -26,8 +26,8 @@ export default function Sidebar () {
                     <AssignmentIndOutlinedIcon /><span>Hồ sơ</span>
                 </div>
             </Link>
-            <Link to='/schedule'>
-                <div className={styles.item} style={path.includes('/schedule') ? {backgroundColor: '#17BB4F',color:'white'} : {}}>
+            <Link to='/appointment'>
+                <div className={styles.item} style={path.includes('/appointment') ? {backgroundColor: '#17BB4F',color:'white'} : {}}>
                     <CalendarMonthOutlinedIcon /><span>Lịch khám</span>
                 </div>
             </Link>
