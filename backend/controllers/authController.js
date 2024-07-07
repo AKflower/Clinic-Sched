@@ -68,3 +68,30 @@ exports.changePassword = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.forgotPassword = async (req, res) => {
+  const { phone } = req.body;
+
+  try {
+    let user;
+      user = await User.findOne({ phone });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Tạo OTP
+    const otp = crypto.randomBytes(3).toString('hex');
+    const otpEntry = new OTP({ userId: user._id, otp });
+    await otpEntry.save();
+
+    // Gửi OTP qua email hoặc SMS
+    if (email) {
+      await sendEmail(user.email, 'Password Reset OTP', `Your OTP is: ${otp}`);
+    } 
+
+    res.status(200).json({ message: 'OTP sent successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

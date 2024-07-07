@@ -41,3 +41,17 @@ exports.getAllFiles = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.getFilesByUserId = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const files = await File.find({ userId });
+    if (!files.length) {
+      return res.status(404).json({ message: 'No files found for this user.' });
+    }
+    res.status(200).json(files);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

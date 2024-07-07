@@ -8,5 +8,6 @@ router.post('/', authenticateToken, authorizeRole(['admin','user']), fileControl
 router.put('/:id', authenticateToken, authorizeRole(['admin', 'doctor']), fileController.updateFile);
 router.delete('/:id', authenticateToken, authorizeRole(['admin', 'doctor']), fileController.deleteFile);
 router.get('/', authenticateToken, fileController.getAllFiles);
+router.get('/user/:userId', authenticateToken, fileController.getFilesByUserId);
 
 module.exports = router;
