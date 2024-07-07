@@ -6,7 +6,7 @@ const appointmentSchema = new Schema({
   doctorId: { type: Schema.Types.ObjectId, ref: 'Doctor', required: true },
   fileId: { type: Schema.Types.ObjectId, ref: 'File', required: true },
   date: { type: Date, required: true },
-  timeId: { type: Schema.Types.ObjectId, ref: 'TimeSlot', required: true },
+  timeId: { type: Number, ref: 'TimeSlot', required: true },
   status: { type: String, required: true },
   note: { type: String }
 });

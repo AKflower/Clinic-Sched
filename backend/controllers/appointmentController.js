@@ -86,7 +86,7 @@ exports.getDoctorAppointmentsByDate = async (req, res) => {
   try {
     // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
     const appointments = await Appointment.find({ doctorId, date });
-
+    console.log(appointments)
     // Lấy ra các thời gian của cuộc hẹn
     const appointmentTimes = appointments.map(appointment => appointment.timeId);
 
