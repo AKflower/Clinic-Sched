@@ -1,4 +1,9 @@
 .container{
+    .date{
+        min-width: 10em;
+        width: fit-content;
+        margin: 0 0 1em 0;
+    }
     .appointmentList{
         width: 80%;
         border: 1px solid silver;

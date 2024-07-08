@@ -1,6 +1,7 @@
 import styles from './appointment.module.scss';
 import { useState, useEffect } from 'react';
 import appointmentService from '../../services/appointment';
+import Input from '../../components/input/input';
 
 export default function Appointment () {
     const role = localStorage.getItem('role')
@@ -23,13 +24,14 @@ export default function Appointment () {
         { id: 16, name: '16:30', time: '16:30' },
       ];
       
-      const [timeSlots,setTimeSlots] = useState(timeSlotsData)
+    const [timeSlots,setTimeSlots] = useState(timeSlotsData)
     const [appointments, setAppointments] = useState([]);
     const [appointmentTimes, setAppointmentTimes] = useState([]);
+    const [date,setDate] = useState(new Date())
    // Hoặc lấy doctorId từ nguồn khác
     const doctorId = localStorage.getItem('id');
     const userId = localStorage.getItem('id'); // Hoặc lấy userId từ nguồn khác
-    const date = new Date(); // Thay đổi ngày phù hợp
+   
   
     const fetchDoctorAppointmentsByDate = async (doctorId, date) => {
       try {
@@ -74,7 +76,21 @@ export default function Appointment () {
         console.error('Error fetching user appointments:', error.message);
       }
     };
-  
+    const handleChangeDate = (e) => {
+      var newDate  = e.target.value
+      setDate(newDate);
+      if (role=='doctor')
+      {if (doctorId && newDate) {
+        fetchDoctorAppointmentsByDate(doctorId, newDate);
+        // fetchDoctorAppointmentsTimeByDate(doctorId, date);
+      }}
+    else
+      if (userId && newDate) {
+        fetchUserAppointmentsByDate(userId, newDate);
+        
+      }
+      
+    }
     useEffect(() => {
         
     if (role=='doctor')
@@ -90,8 +106,13 @@ export default function Appointment () {
     }, [ ]);
     if (!appointments) return null;
     else if (role=='user') return   (
+
         <div className={styles.container}>
         <h1>Lịch khám</h1>  
+        <div className={styles.date}>
+        <Input label='Chọn ngày' type="date" value={formatDateYYYMMDD(date)} onChange={handleChangeDate}/>
+        </div>
+       
         <div className={styles.appointmentList}>
         {timeSlots.map((timeSlot) => (
             <div className={styles.appointmentContainer}>
@@ -140,4 +161,11 @@ function formatDate(dateInput) {
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+}
+function formatDateYYYMMDD(dateInput) {
+  const date = new Date(dateInput)
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
+  const year = date.getFullYear();
+  return `${year}-${day}-${month}`;
 }
