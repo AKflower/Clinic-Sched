@@ -48,6 +48,18 @@ exports.updateDoctor = async (req, res) => {
   }
 };
 
+exports.updateActiveDoctor = async (req, res) => {
+  const { isActive } = req.body;
+  const updateData = { isActive };
+
+  try {
+    const updatedDoctor = await Doctor.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.status(200).json(updatedDoctor);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 exports.deleteDoctor = async (req, res) => {
   try {
     await Doctor.findByIdAndDelete(req.params.id);

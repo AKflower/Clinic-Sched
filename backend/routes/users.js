@@ -7,6 +7,7 @@ router.get('/', authenticateToken, authorizeRole(['admin']), userController.getA
 router.get('/:id', authenticateToken, authorizeRole(['admin']), userController.getUserById);
 router.post('/', authenticateToken, authorizeRole(['admin']), userController.addUser);
 router.put('/:id', authenticateToken, authorizeRole(['admin', 'user']), userController.updateUser);
+router.put('/active/:id', authenticateToken, authorizeRole(['admin']), userController.updateActiveUser);
 router.delete('/:id', authenticateToken, authorizeRole(['admin']), userController.deleteUser);
 
 

@@ -47,6 +47,18 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+exports.updateActiveUser = async (req, res) => {
+  const { isActive } = req.body;
+  const updateData = { isActive };
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 exports.deleteUser = async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
