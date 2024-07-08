@@ -8,7 +8,8 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   gender: { type: String, required: true },
   role: { type: String, enum: ['user'], default: 'user', required: true },
-  appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }]
+  appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
+  isActive: { type: Boolean, required: true,  default: true},
 });
 
 module.exports = mongoose.model('User', userSchema);

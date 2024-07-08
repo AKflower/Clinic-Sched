@@ -9,7 +9,8 @@ const doctorSchema = new Schema({
   gender: { type: String, required: true },
   role: { type: String, enum: ['doctor'], default: 'doctor', required: true },
   department: [{ type: Schema.Types.ObjectId, ref: 'Department', required: true }],
-  appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }]
+  appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
+  isActive: { type: Boolean, required: true },
 });
 
 module.exports = mongoose.model('Doctor', doctorSchema);

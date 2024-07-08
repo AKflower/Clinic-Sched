@@ -9,6 +9,7 @@ router.get('/', authenticateToken, doctorController.getAllDoctors);
 router.get('/:id', authenticateToken, doctorController.getDoctorById);
 router.post('/', authenticateToken, authorizeRole(['admin','user']), doctorController.addDoctor);
 router.put('/:id', authenticateToken, authorizeRole(['admin', 'doctor']), doctorController.updateDoctor);
+router.put('/active/:id', authenticateToken, authorizeRole(['admin']), doctorController.updateActiveDoctor);
 router.delete('/:id', authenticateToken, authorizeRole(['admin']), doctorController.deleteDoctor);
 
 
