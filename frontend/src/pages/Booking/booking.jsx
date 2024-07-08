@@ -137,7 +137,7 @@ export default function Booking() {
       
   const fetchTimeSlot = async (date) => {
     
-    const data = await appointmentService.getDoctorAppointmentsByDate(doctorId,date);
+    const data = await appointmentService.getDoctorAppointmentsTimeByDate(doctorId,date);
     checkTimeSlot(data,new Date(date))
     console.log(timeSlotsData);
     setTimeSlotsBusy(data)
@@ -218,7 +218,7 @@ const handleConfirmAppointment = async (e) => {
     try {
         const newAppointment = await appointmentService.addAppointment(newAppointmentData);
         console.log('New Appointment:', newAppointment);
-        toast.error(`Đặt lịch thành công!`);
+        toast.success(`Đặt lịch thành công!`);
         // Thực hiện các hành động khác sau khi lưu thành công, ví dụ đóng modal
         closeModal();
     } catch (error) {
@@ -226,6 +226,8 @@ const handleConfirmAppointment = async (e) => {
     }
 };
   const handleSelectTimeSlot = (timeSlot) => {
+    console.log('test: ',timeSlot);
+    if (timeSlot.isPass || timeSlot.isBusy) return;
     setTimeSlotSelected(timeSlot);
   }
   const openModal = () => {

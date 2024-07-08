@@ -9,6 +9,7 @@ import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 
 export default function Sidebar () {
+    const role = localStorage.getItem('role')
     const path = useLocation().pathname;
     console.log(path);  
     
@@ -21,11 +22,11 @@ export default function Sidebar () {
                    <OtherHousesOutlinedIcon /><span>Trang chủ</span>
                 </div>
             </Link>
-            <Link to='/file'>
+            {role == 'user'&&<Link to='/file'>
                 <div className={styles.item} style={path.includes('/file') ? {backgroundColor: '#17BB4F',color:'white'} : {}}>
                     <AssignmentIndOutlinedIcon /><span>Hồ sơ</span>
                 </div>
-            </Link>
+            </Link>}
             <Link to='/appointment'>
                 <div className={styles.item} style={path.includes('/appointment') ? {backgroundColor: '#17BB4F',color:'white'} : {}}>
                     <CalendarMonthOutlinedIcon /><span>Lịch khám</span>
