@@ -77,7 +77,7 @@ exports.getDoctorsWithAvailability = async (req, res) => {
 
   function findTimeSlot(time) {
     const [hours, minutes] = time.split(':').map(Number);
-
+    if(hours < 8) return -1;
     const currentTime = new Date();
     currentTime.setHours(hours, minutes, 0, 0);
   
