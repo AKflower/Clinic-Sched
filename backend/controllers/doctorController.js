@@ -75,6 +75,17 @@ exports.getDoctorsWithAvailability = async (req, res) => {
   const { departmentId } = req.params;
   const { date, time } = req.query;
 
+  function isWeekend(date) {
+    // Tạo đối tượng Date từ chuỗi ngày
+    const d = new Date(date);
+    
+    // Lấy chỉ số ngày trong tuần (0: Chủ Nhật, 1: Thứ Hai, ..., 6: Thứ Bảy)
+    const day = d.getDay();
+    
+    // Kiểm tra xem có phải là Thứ Bảy (6) hoặc Chủ Nhật (0) hay không
+    return day === 0 || day === 6;
+  }
+
   function findTimeSlot(time) {
     const [hours, minutes] = time.split(':').map(Number);
     if(hours < 8) return -1;
@@ -119,7 +130,7 @@ exports.getDoctorsWithAvailability = async (req, res) => {
    
     // Tìm tất cả các bác sĩ trong department
     const doctorsInDepartment = await Doctor.find({ department: departmentId }).populate('department', 'name');
-
+   
     // Tìm tất cả các cuộc hẹn trong thời gian thực
     const appointmentsInTimeSlot = await Appointment.find({ date, timeId });
 
@@ -128,7 +139,11 @@ exports.getDoctorsWithAvailability = async (req, res) => {
       const isBusy = appointmentsInTimeSlot.some(appointment => 
         appointment.doctorId.toString() === doctor._id.toString()
       );
-      if (timeId==-1) return {
+      if (isWeekend(date)) return {
+        ...doctor._doc,
+        isBusy:true
+      };
+      if (timeId == -1 ) return {
         ...doctor._doc,
         isBusy:true
       };
