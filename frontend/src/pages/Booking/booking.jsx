@@ -212,7 +212,8 @@ const handleConfirmAppointment = async (e) => {
         date: selectedDate,
         timeId: timeSlotSelected.id,
         status: 'await', // Hoặc giá trị mặc định khác tùy vào yêu cầu của bạn
-        note: '', // Ghi chú có thể để trống ban đầu
+        note: '',
+        departmentId: departmentId  // Ghi chú có thể để trống ban đầu
     };
 
     try {

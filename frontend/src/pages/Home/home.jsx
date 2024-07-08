@@ -1,13 +1,16 @@
 import styles from './home.module.scss';
 import Card from '../../components/card/card';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import departmentService from '../../services/departmentService';
 
 export default function Home () {
+    var token = localStorage.getItem('token');
     // const [department,setDepartment] = useState(null);
     const [departments, setDepartments] = useState([]);
-
+    const navigate = useNavigate()
     useEffect(() => {
+        if (!token) navigate('/home')
         // Load danh sách Departments khi component được render
         fetchDepartments();
     }, []);

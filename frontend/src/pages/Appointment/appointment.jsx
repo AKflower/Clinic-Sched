@@ -14,6 +14,8 @@ export default function Appointment () {
         { id: 6, name: '10:30', time: '10:30' },
         { id: 7, name: '11:00', time: '11:00' },
         { id: 8, name: '11:30', time: '11:30' },
+        {id:100,name:'12:00',time:'12:00'},
+        {id:101,name:'12:30',time:'12:30'},
         { id: 9, name: '13:00', time: '13:00' },
         { id: 10, name: '13:30', time: '13:30' },
         { id: 11, name: '14:00', time: '14:00' },
@@ -35,8 +37,8 @@ export default function Appointment () {
   
     const fetchDoctorAppointmentsByDate = async (doctorId, date) => {
       try {
+        var timeSlots =timeSlotsData;
         const appointments = await appointmentService.getDoctorAppointmentsByDate(doctorId, date.toISOString().split('T')[0]);
-        setAppointments(appointments); // Cập nhật state appointments với dữ liệu mới
         appointments.forEach((appointment) => {
             var temp = timeSlots.find((a) => 
                 a.id === appointment.timeId
@@ -44,9 +46,14 @@ export default function Appointment () {
             temp.doctorId = appointment.doctorId;
             temp.userId = appointment.userId;
             temp.fileId = appointment.fileId;
+
         })
+        console.log(timeSlots);
+        setTimeSlots(timeSlots)
+        console.log('test');
+        setAppointments(appointments); // Cập nhật state appointments với dữ liệu mới
       } catch (error) {
-        console.error('Error fetching doctor appointments:', error.message);
+        console.error('Error fetching user appointments:', error.message);
       }
     };
   
@@ -61,6 +68,7 @@ export default function Appointment () {
   
     const fetchUserAppointmentsByDate = async (userId, date) => {
       try {
+        var timeSlots =timeSlotsData;
         const appointments = await appointmentService.getUserAppointmentsByDate(userId, date.toISOString().split('T')[0]);
         appointments.forEach((appointment) => {
             var temp = timeSlots.find((a) => 
@@ -69,28 +77,39 @@ export default function Appointment () {
             temp.doctorId = appointment.doctorId;
             temp.userId = appointment.userId;
             temp.fileId = appointment.fileId;
+
             
         })
+        console.log(timeSlots);
+        setTimeSlots(timeSlots)
+        console.log('test');
         setAppointments(appointments); // Cập nhật state appointments với dữ liệu mới
       } catch (error) {
         console.error('Error fetching user appointments:', error.message);
       }
     };
     const handleChangeDate = (e) => {
-      var newDate  = e.target.value
-      setDate(newDate);
-      if (role=='doctor')
-      {if (doctorId && newDate) {
-        fetchDoctorAppointmentsByDate(doctorId, newDate);
-        // fetchDoctorAppointmentsTimeByDate(doctorId, date);
-      }}
-    else
-      if (userId && newDate) {
-        fetchUserAppointmentsByDate(userId, newDate);
-        
+      var newDate = new Date(e.target.value);
+    
+      // Check if the newDate is a valid Date object
+      if (isNaN(newDate)) {
+        console.error('Invalid date format');
+        return;
       }
-      
-    }
+    
+      console.log(newDate);
+      setDate(newDate);
+    
+      if (role === 'doctor') {
+        if (doctorId && newDate) {
+          fetchDoctorAppointmentsByDate(doctorId, newDate);
+        }
+      } else {
+        if (userId && newDate) {
+          fetchUserAppointmentsByDate(userId, newDate);
+        }
+      }
+    };
     useEffect(() => {
         
     if (role=='doctor')
@@ -167,5 +186,5 @@ function formatDateYYYMMDD(dateInput) {
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
   const year = date.getFullYear();
-  return `${year}-${day}-${month}`;
+  return `${year}-${month}-${day}`;
 }

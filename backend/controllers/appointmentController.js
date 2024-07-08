@@ -22,9 +22,9 @@ exports.getAppointmentById = async (req, res) => {
 };
 
 exports.addAppointment = async (req, res) => {
-  const { userId, doctorId, fileId, date, timeId, status, note } = req.body;
+  const { userId, doctorId, fileId, date, timeId, status, note, departmentId } = req.body;
   
-  const newAppointment = new Appointment({ userId, doctorId, fileId, date, timeId, status, note });
+  const newAppointment = new Appointment({ userId, doctorId, fileId, date, timeId, status, note, departmentId });
 
   try {
     const savedAppointment = await newAppointment.save();
@@ -104,7 +104,7 @@ exports.getDoctorAppointmentsByDate = async (req, res) => {
   console.log(doctorId,date);
   try {
     // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
-    const appointments = await Appointment.find({ doctorId, date }).populate('fileId').populate('userId').populate('doctorId');
+    const appointments = await Appointment.find({ doctorId, date }).populate('fileId').populate('userId').populate('doctorId').populate('departmentId');
 
     res.status(200).json(appointments);
   } catch (err) {
@@ -118,8 +118,8 @@ exports.getUserAppointmentsByDate = async (req, res) => {
   const { date } = req.query;
   try {
     // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
-    const appointments = await Appointment.find({ userId, date }).populate('userId').populate('doctorId').populate('fileId');;
-
+    const appointments = await Appointment.find({ userId, date }).populate('departmentId').populate('userId').populate('doctorId').populate('fileId');
+    console.log(appointments);
     res.status(200).json(appointments);
   } catch (err) {
     res.status(500).json({ message: err.message });

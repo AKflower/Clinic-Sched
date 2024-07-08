@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Login from './pages/Login/login';
-import { BrowserRouter, Route, Link, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Route, Link, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Register from './pages/Register/register';
 import ForgotPassword from './pages/ForgotPassword/forgotPassword';
 import Sidebar from './components/sidebar/sidebar';
@@ -13,12 +13,21 @@ import Booking from './pages/Booking/booking'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Appointment from './pages/Appointment/appointment'
-
+import { useEffect} from 'react'
+  
 const Main = () => {
   const location = useLocation();
-  const path = location.pathname;
-  console.log(path);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const path = location.pathname;
+    if (!token && !path.includes('/login') && !path.includes('/register') && !path.includes('/forgot')) {
+      navigate('/login');
+    }
+  }, [location, navigate]);
+
+  const path = location.pathname;
   return (
     <>
       <Sidebar />

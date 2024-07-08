@@ -54,5 +54,5 @@ io.of( '/stream' ).on( 'connection', stream );
 // Bắt đầu server
 const PORT = process.env.PORT || 3001;
 const PORT2 = process.env.PORT || 3002;
-server.listen(PORT2, () => console.log(`Server running on port ${PORT}`));
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
