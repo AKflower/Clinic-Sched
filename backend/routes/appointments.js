@@ -11,5 +11,7 @@ router.delete('/:id', authenticateToken, authorizeRole(['user', 'doctor']), appo
 router.get('/doctor/:doctorId/times', authenticateToken, appointmentController.getDoctorAppointmentsTimeByDate);
 router.get('/doctor/:doctorId', authenticateToken, appointmentController.getDoctorAppointmentsByDate);
 router.get('/user/:userId', authenticateToken, appointmentController.getUserAppointmentsByDate);
+router.get('/doctor/:doctorId/total', authenticateToken, appointmentController.getTotalAppointmentsByMonth);
+router.get('/doctor/:doctorId/getPatient', authenticateToken, appointmentController.getPatientRecordsByDoctor);
 
 module.exports = router;

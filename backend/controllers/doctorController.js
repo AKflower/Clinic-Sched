@@ -33,6 +33,30 @@ exports.addDoctor = async (req, res) => {
   }
 };
 
+exports.updateDayOff = async (req, res) => {
+  const { doctorId } = req.params;
+  const { date, reason } = req.body;
+
+  try {
+    // Tìm bác sĩ dựa trên doctorId
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found.' });
+    }
+
+    // Thêm vào mảng holidays của bác sĩ
+    doctor.dayOff.push({ date, reason });
+
+    // Lưu lại thông tin và trả về response
+    await doctor.save();
+    res.status(200).json({ message: 'dayOff added successfully.', doctor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
 exports.updateDoctor = async (req, res) => {
   const { name, phone, email, password, department } = req.body;
   const updateData = { name, phone, email, department };
