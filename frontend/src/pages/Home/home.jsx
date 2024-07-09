@@ -3,16 +3,24 @@ import Card from '../../components/card/card';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import departmentService from '../../services/departmentService';
+import appointmentService from '../../services/appointment'
+import CardDashBoard from '../../components/card/cardDashboard';
 
 export default function Home () {
+
     var token = localStorage.getItem('token');
+    const doctorId = localStorage.getItem('id');
+    const userId = localStorage.getItem('id'); 
+    const role = localStorage.getItem('role')
     // const [department,setDepartment] = useState(null);
     const [departments, setDepartments] = useState([]);
+    const [timeSlot,setTimeSlot] = useState([])
     const navigate = useNavigate()
     useEffect(() => {
         if (!token) navigate('/home')
         // Load danh sách Departments khi component được render
         fetchDepartments();
+        if (role=='doctor') fetchTimeSlot();
     }, []);
 
     const fetchDepartments = async () => {
@@ -23,6 +31,14 @@ export default function Home () {
         console.error('Error fetching departments:', error.message);
         }
     };
+    const fetchTimeSlot = async () => {
+        const date =new Date()
+        const data = await appointmentService.getDoctorAppointmentsTimeByDate(doctorId,date);
+        
+
+        setTimeSlot(data)
+      }
+    if (role=='user')
     return (
         <div className={styles.container}>
             <h1>Đặt khám</h1>
@@ -36,4 +52,16 @@ export default function Home () {
             
         </div>
     )
+    if (role=='doctor')  {
+       
+        return (
+        <div className={styles.container}>
+            <h1>Thống kê</h1>
+            <div className={styles.departmentContainer}>
+            <CardDashBoard data={{quant:timeSlot.length,text:'Lịch khám hôm nay'}}/>
+                
+            </div>
+            
+        </div>
+    )}
 }

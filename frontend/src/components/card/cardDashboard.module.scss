@@ -1,0 +1,20 @@
+.container{
+    padding: 1em 2em;
+    background-color: #d7faff;
+    box-shadow: 1px 1px 5px black;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    color: #575252;
+    h1{
+        margin: 1em 0 .2em 0;
+        font-size: 4em;
+    }
+    .icon{
+        max-width: fit-content;
+        background: white;
+        padding: 1em;
+        border-radius: 50%;
+        float: right;
+    }
+}

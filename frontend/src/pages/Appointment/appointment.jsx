@@ -2,6 +2,11 @@ import styles from './appointment.module.scss';
 import { useState, useEffect } from 'react';
 import appointmentService from '../../services/appointment';
 import Input from '../../components/input/input';
+import Modal from 'react-modal';
+import CardInfor from '../../components/card/cardInfor';
+
+Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
+
 
 export default function Appointment () {
     const role = localStorage.getItem('role')
@@ -46,6 +51,7 @@ export default function Appointment () {
             temp.doctorId = appointment.doctorId;
             temp.userId = appointment.userId;
             temp.fileId = appointment.fileId;
+            temp.departmentId = appointment.departmentId;
 
         })
         console.log(timeSlots);
@@ -77,6 +83,7 @@ export default function Appointment () {
             temp.doctorId = appointment.doctorId;
             temp.userId = appointment.userId;
             temp.fileId = appointment.fileId;
+            temp.departmentId = appointment.departmentId;
 
             
         })
@@ -87,6 +94,21 @@ export default function Appointment () {
       } catch (error) {
         console.error('Error fetching user appointments:', error.message);
       }
+    };
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [appointment,setAppointment] = useState(null)
+    const handleSelectAppointment = function(appointment) {
+        setAppointment(appointment);
+        openModal();
+    }
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setIsModalOpen(false);
+  
+  
     };
     const handleChangeDate = (e) => {
       var newDate = new Date(e.target.value);
@@ -137,10 +159,11 @@ export default function Appointment () {
             <div className={styles.appointmentContainer}>
                 <div className={styles.timeSlot}>{timeSlot.name}</div>
                {timeSlot.doctorId && <div className={styles.content}>
-                    <div style={{fontWeight:'600'}}>Bác sĩ {timeSlot.doctorId && timeSlot.doctorId.name}</div>
-                    <div style={{fontSize:'.75em'}}><span >{timeSlot.userId.name}</span> </div>
-                    <div style={{fontSize:'.75em'}}><span>Mã hồ sơ: #{timeSlot.fileId && timeSlot.fileId.fileid}</span></div>
-                    <div style={{fontSize:'.75em'}}><span>Triệu chứng: {timeSlot.fileId && timeSlot.fileId.symptom}</span></div>
+               <div style={{fontWeight:'600'}}>Khám {timeSlot.departmentId && timeSlot.departmentId.name.toLowerCase()}</div>
+                    <div style={{fontWeight:'400'}}>Bác sĩ: {timeSlot.doctorId && timeSlot.doctorId.name}</div>
+                    <div style={{fontSize:'.75em'}}> <span>Mã hồ sơ: #{timeSlot.fileId && timeSlot.fileId.fileid}</span></div>
+                    <div style={{fontSize:'.75em',display:'flex',gap:'2em'}}><span style={{fontWeight: '500'}}>{timeSlot.userId.name}</span><span>Triệu chứng: {timeSlot.fileId && timeSlot.fileId.symptom}</span></div>
+                    <div style={{fontSize:'.75em'}}></div>
                 </div>}
             </div>
         )
@@ -154,15 +177,18 @@ export default function Appointment () {
     else if (role=='doctor') return (
         <div className={styles.container}>
         <h1>Lịch khám</h1>  
-        <div className={styles.appointmentList}>
+        <div className={styles.date}>
+        <Input label='Chọn ngày' type="date" value={formatDateYYYMMDD(date)} onChange={handleChangeDate}/>
+        </div>        <div className={styles.appointmentList}>
         {timeSlots.map((timeSlot) => (
             <div className={styles.appointmentContainer}>
                 <div className={styles.timeSlot}>{timeSlot.name}</div>
                {
-                timeSlot.doctorId && <div className={styles.content}>
-                    <div style={{fontWeight:'600'}}>{timeSlot.userId && timeSlot.userId.name} - {timeSlot.fileId && formatDate(timeSlot.fileId.birthDate)}</div>
-                    <div style={{fontSize:'.75em'}}><span>Mã hồ sơ: #{timeSlot.fileId && timeSlot.fileId.fileid}</span></div>
-                    <div style={{fontSize:'.75em'}}><span>Triệu chứng: {timeSlot.fileId && timeSlot.fileId.symptom}</span></div>
+                timeSlot.doctorId && <div className={styles.content} onClick={handleSelectAppointment}>
+                <div style={{fontWeight:'600'}}>Khám {timeSlot.departmentId && timeSlot.departmentId.name.toLowerCase()}</div>
+                    <div style={{fontWeight:'400'}}>{timeSlot.userId && timeSlot.userId.name} - {timeSlot.fileId && formatDate(timeSlot.fileId.birthDate)}</div>
+                    <div style={{fontSize:'.75em'}}> <span>Mã hồ sơ: #{timeSlot.fileId && timeSlot.fileId.fileid}</span></div>
+                    <div style={{fontSize:'.75em',display:'flex',gap:'2em'}}><span style={{fontWeight: '500'}}>{timeSlot.userId.name}</span><span>Triệu chứng: {timeSlot.fileId && timeSlot.fileId.symptom}</span></div>
                 </div>
             }
             </div>
@@ -170,7 +196,21 @@ export default function Appointment () {
 
         )}
         </div>
-            
+        <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Add File Modal"
+        className={styles.modal}
+        overlayClassName={styles.overlay}
+      >
+        <h2>Thông tin</h2>
+        { (appointment && appointment.doctorId) &&
+          <CardInfor title={'Thông tin bác sĩ'} fields={[{label:'Tên',value:appointment.doctorId.name}]}/>
+        }
+      
+
+        
+      </Modal>
         </div>
     )
 }

@@ -13,6 +13,7 @@ import Booking from './pages/Booking/booking'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Appointment from './pages/Appointment/appointment'
+import AppointmentDetail from './pages/AppointmentDetail/appointmentDetail';
 import { useEffect} from 'react'
   
 const Main = () => {

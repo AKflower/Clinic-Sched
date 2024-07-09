@@ -1,0 +1,10 @@
+.container{
+    padding: .2em 1em 1em 1em;
+    border-top: 5px solid blue;
+    border-radius: 8px;
+    background: #fbfff5;
+    .field{
+        display: flex;
+        justify-content: space-between;
+    }
+}
