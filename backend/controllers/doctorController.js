@@ -33,6 +33,30 @@ exports.addDoctor = async (req, res) => {
   }
 };
 
+exports.updateDayOff = async (req, res) => {
+  const { doctorId } = req.params;
+  const { date, reason } = req.body;
+
+  try {
+    // Tìm bác sĩ dựa trên doctorId
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found.' });
+    }
+
+    // Thêm vào mảng holidays của bác sĩ
+    doctor.dayOff.push({ date, reason });
+
+    // Lưu lại thông tin và trả về response
+    await doctor.save();
+    res.status(200).json({ message: 'dayOff added successfully.', doctor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
 exports.updateDoctor = async (req, res) => {
   const { name, phone, email, password, department } = req.body;
   const updateData = { name, phone, email, department };
@@ -74,6 +98,17 @@ exports.deleteDoctor = async (req, res) => {
 exports.getDoctorsWithAvailability = async (req, res) => {
   const { departmentId } = req.params;
   const { date, time } = req.query;
+
+  function isWeekend(date) {
+    // Tạo đối tượng Date từ chuỗi ngày
+    const d = new Date(date);
+    
+    // Lấy chỉ số ngày trong tuần (0: Chủ Nhật, 1: Thứ Hai, ..., 6: Thứ Bảy)
+    const day = d.getDay();
+    
+    // Kiểm tra xem có phải là Thứ Bảy (6) hoặc Chủ Nhật (0) hay không
+    return day === 0 || day === 6;
+  }
 
   function findTimeSlot(time) {
     const [hours, minutes] = time.split(':').map(Number);
@@ -119,7 +154,7 @@ exports.getDoctorsWithAvailability = async (req, res) => {
    
     // Tìm tất cả các bác sĩ trong department
     const doctorsInDepartment = await Doctor.find({ department: departmentId }).populate('department', 'name');
-
+   
     // Tìm tất cả các cuộc hẹn trong thời gian thực
     const appointmentsInTimeSlot = await Appointment.find({ date, timeId });
 
@@ -128,7 +163,11 @@ exports.getDoctorsWithAvailability = async (req, res) => {
       const isBusy = appointmentsInTimeSlot.some(appointment => 
         appointment.doctorId.toString() === doctor._id.toString()
       );
-      if (timeId==-1) return {
+      if (isWeekend(date)) return {
+        ...doctor._doc,
+        isBusy:true
+      };
+      if (timeId == -1 ) return {
         ...doctor._doc,
         isBusy:true
       };

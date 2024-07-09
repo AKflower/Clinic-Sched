@@ -1,7 +1,7 @@
 const Appointment = require('../models/Appointment');
 const User = require('../models/User');
 const Doctor = require('../models/doctor');
-
+const mongoose = require('mongoose');
 
 exports.getAllAppointments = async (req, res) => {
   try {
@@ -123,5 +123,72 @@ exports.getUserAppointmentsByDate = async (req, res) => {
     res.status(200).json(appointments);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+
+
+exports.getTotalAppointmentsByMonth = async (req, res) => {
+  const { doctorId } = req.params;
+  const { month, year } = req.query;
+  
+  try {
+    // Chuyển đổi month và year từ string thành số nguyên
+    const monthNumber = parseInt(month);
+    const yearNumber = parseInt(year);
+
+    // Kiểm tra tính hợp lệ của monthNumber và yearNumber
+    if (isNaN(monthNumber) || monthNumber < 1 || monthNumber > 12 || isNaN(yearNumber) || yearNumber < 1970 || yearNumber > 3000) {
+      return res.status(400).json({ message: 'Invalid month or year format.' });
+    }
+
+    // Tạo object Date để lọc theo tháng và năm
+    const startDate = new Date(`${year}-${month}-01T00:00:00Z`);
+    const nextMonthDate = new Date(yearNumber, monthNumber, 1);
+    const endDate = new Date(nextMonthDate.getTime() - 1);
+
+    // Tạo query để đếm số lượng các appointment
+    const totalAppointments = await Appointment.countDocuments({
+      doctorId,
+      date: { $gte: startDate, $lte: endDate }
+    });
+    const tappointments = await Appointment.find({
+      doctorId,
+      date: { $gte: startDate, $lte: endDate }
+    });
+    console.log(tappointments)
+    res.status(200).json(totalAppointments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+exports.getPatientRecordsByDoctor = async (req, res) => {
+  const { doctorId } = req.params;
+
+  try {
+    // Tìm các appointment có doctorId tương ứng
+    const appointments = await Appointment.find({ doctorId }).populate('userId').populate('fileId');
+
+    // Lấy danh sách các hồ sơ bệnh nhân
+    const patientRecords = appointments.map(appointment => ({
+      userId: appointment.userId._id,
+      username: appointment.userId.username,
+      email: appointment.userId.email,
+      file: {
+        fileId: appointment.fileId._id,
+        symptom: appointment.fileId.symptom,
+        description: appointment.fileId.description,
+        date: appointment.fileId.date,
+        status: appointment.fileId.status,
+        result: appointment.fileId.result
+      }
+    }));
+
+    res.status(200).json(patientRecords);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error.' });
   }
 };
