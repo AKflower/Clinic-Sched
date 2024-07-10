@@ -164,10 +164,9 @@ try {
       appointment.doctorId.toString() === doctor._id.toString()
     );
     const currentDate = new Date(date);
-    isBusy = !doctor.dayOff.some(dayOff => 
+    isBusy = doctor.dayOff.some(dayOff => 
       dayOff.date.toISOString().split('T')[0] === currentDate.toISOString().split('T')[0]
     )
-    console.log(isBusy)
     if (isWeekend(date)) return {
       ...doctor._doc,
       isBusy:true
