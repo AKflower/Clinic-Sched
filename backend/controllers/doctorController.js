@@ -197,16 +197,17 @@ try {
   // Tìm tất cả các cuộc hẹn trong thời gian thực
   const appointmentsInTimeSlot = await Appointment.find({ date, timeId });
 
+  const currentDate = new Date(date);
 
   // Tạo danh sách các bác sĩ với trạng thái bận rộn
-  const doctorsWithAvailability = doctorsInDepartment.map(doctor => {
+  const doctorsWithAvailability = doctorsInDepartment
+    .filter(doctor => !doctor.dayOff.some(dayOff => 
+      dayOff.date.toISOString().split('T')[0] === currentDate.toISOString().split('T')[0]
+    ))
+    .map(doctor => {
     let isBusy = appointmentsInTimeSlot.some(appointment => 
       appointment.doctorId.toString() === doctor._id.toString()
     );
-    const currentDate = new Date(date);
-    isBusy = doctor.dayOff.some(dayOff => 
-      dayOff.date.toISOString().split('T')[0] === currentDate.toISOString().split('T')[0]
-    )
     if (isWeekend(date)) return {
       ...doctor._doc,
       isBusy:true

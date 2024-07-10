@@ -15,5 +15,6 @@ router.get('/doctor/:doctorId/total', authenticateToken, appointmentController.g
 router.get('/doctor/:doctorId/getPatient', authenticateToken, appointmentController.getPatientRecordsByDoctor);
 router.patch('/status/:id', authenticateToken, authorizeRole(['admin', 'user']), appointmentController.updateAppointmentStatus);
 router.put('/active/:id', authenticateToken, authorizeRole(['admin']), appointmentController.updateActiveAppointment);
+router.get('/workingSheet/:month/:year', authenticateToken, authorizeRole(['admin']), appointmentController.getWorkingDaysAndDoctors);
 
 module.exports = router;

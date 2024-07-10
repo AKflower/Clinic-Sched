@@ -203,7 +203,7 @@ exports.updateAppointmentStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  const validStatuses = ['Wait for payment', 'Paid','Confirmed', 'Complete', 'Overdue'];
+  const validStatuses = ['Wait for payment', 'Paid', 'Confirmed', 'Complete', 'Overdue'];
   
   if (!validStatuses.includes(status)) {
     return res.status(400).json({ message: 'Invalid status.' });
@@ -225,4 +225,55 @@ exports.updateAppointmentStatus = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Server error.' });
   }
+};
+
+exports.getWorkingDaysAndDoctors = async (req, res) => {
+  const { month, year } = req.params;
+
+  // Chuyển đổi month và year từ string thành số nguyên
+  const monthNumber = parseInt(month);
+  const yearNumber = parseInt(year);
+
+  // Kiểm tra tính hợp lệ của monthNumber và yearNumber
+  if (isNaN(monthNumber) || monthNumber < 1 || monthNumber > 12 || isNaN(yearNumber) || yearNumber < 1970 || yearNumber > 3000) {
+    return res.status(400).json({ message: 'Invalid month or year format.' });
+  }
+
+  // Lấy tất cả các bác sĩ
+  const doctors = await Doctor.find();
+
+  // Tạo mảng chứa tất cả các ngày trong tháng
+  const daysInMonth = new Date(yearNumber, monthNumber, 0).getDate();
+  const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+  // Tạo danh sách ngày với bác sĩ làm việc
+  const result = await Promise.all(
+    daysArray.map(async (day) => {
+      const date = new Date(yearNumber, monthNumber - 1, day);
+
+      // Kiểm tra bác sĩ nào đi làm ngày đó
+      const workingDoctors = await Promise.all(
+        doctors.map(async (doctor) => {
+
+          // Kiểm tra ngày nghỉ của bác sĩ
+          const isDayOff = doctor.dayOff.some(dayOff => dayOff.date.toDateString() === date.toDateString());
+          
+          if (!isDayOff) {
+            return {
+              id: doctor._id,
+              name: doctor.name
+            };
+          }
+          return null;
+        })
+      );
+
+      return {
+        date: date,
+        doctors: workingDoctors.filter(doctor => doctor !== null),
+      };
+    })
+  );
+
+  res.status(200).json(result);
 };
