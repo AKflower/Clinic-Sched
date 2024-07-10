@@ -203,7 +203,7 @@ exports.updateAppointmentStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  const validStatuses = ['Wait for confirmation', 'Confirmed', 'Complete', 'Overdue'];
+  const validStatuses = ['Wait for payment', 'Paid', 'Confirmed', 'Complete', 'Overdue'];
   
   if (!validStatuses.includes(status)) {
     return res.status(400).json({ message: 'Invalid status.' });
