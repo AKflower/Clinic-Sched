@@ -51,6 +51,15 @@ const doctorService = {
       throw new Error(error.response?.data?.message || error.message);
     }
   },
+  updateActiveDoctor: async (id, isActive) => {
+    try {
+      const response = await axiosInstance.put(`/doctors/active/${id}`, { isActive });
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating active status of user with id ${id}:`, error);
+      throw error;
+    }
+  },
 
   // Xóa Doctor
   deleteDoctor: async (id) => {

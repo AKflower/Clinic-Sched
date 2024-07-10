@@ -13,9 +13,14 @@ import Booking from './pages/Booking/booking'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Appointment from './pages/Appointment/appointment'
-import AppointmentDetail from './pages/AppointmentDetail/appointmentDetail';
+import AppointmentManage from './pages/AppointmentManage/appointmentManage'
+import User from './pages/User/user'
+import Doctor from './pages/Doctor/doctor'
 import { useEffect} from 'react'
-  
+ 
+
+
+
 const Main = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -49,6 +54,9 @@ const Main = () => {
             <Route path="/file" element={<File />} />
             <Route path="/home/doctors/booking" element={<Booking />} />
             <Route path='/appointment' element={<Appointment />} />
+            <Route path='/manage_user' element={<User />} />
+            <Route path='/manage_doctor' element={<Doctor />} />
+            <Route path='/manage_appointment' element={<AppointmentManage />} />
           </Routes>
         </div>
       </div>

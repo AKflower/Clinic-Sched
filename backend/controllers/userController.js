@@ -35,9 +35,9 @@ exports.addUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   const { name, phone, email, password } = req.body;
   const updateData = { name, phone, email };
-  if (password) {
-    updateData.password = await bcrypt.hash(password, 10);
-  }
+  // if (password) {
+  //   updateData.password = await bcrypt.hash(password, 10);
+  // }
 
   try {
     const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });

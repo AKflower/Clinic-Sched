@@ -32,8 +32,16 @@ export default function Home () {
         }
     };
     const fetchTimeSlot = async () => {
-        const date =new Date()
-        const data = await appointmentService.getDoctorAppointmentsTimeByDate(doctorId,date);
+        const date = new Date();
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+       
+
+        const data = await appointmentService.getDoctorAppointmentsTimeByDate(doctorId,formattedDate);
         
 
         setTimeSlot(data)
@@ -58,10 +66,16 @@ export default function Home () {
         <div className={styles.container}>
             <h1>Thống kê</h1>
             <div className={styles.departmentContainer}>
-            <CardDashBoard data={{quant:timeSlot.length,text:'Lịch khám hôm nay'}}/>
-                
+            <CardDashBoard data={{quant:timeSlot.length,text:'Lịch khám hôm nay'}} goto={'appointment'}/>
+            <CardDashBoard data={{quant:12,text:'Lịch khám trong tháng'}} goto={'appointment'}/>
             </div>
             
         </div>
     )}
+    if (role=='admin') return (
+        <div className={styles.container}>
+            
+       
+        </div>
+    )
 }

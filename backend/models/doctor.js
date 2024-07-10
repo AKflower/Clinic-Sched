@@ -6,7 +6,7 @@ const doctorSchema = new Schema({
   phone: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  gender: { type: String, required: true },
+  gender: { type: String},
   role: { type: String, enum: ['doctor'], default: 'doctor', required: true },
   department: [{ type: Schema.Types.ObjectId, ref: 'Department', required: true }],
   appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
