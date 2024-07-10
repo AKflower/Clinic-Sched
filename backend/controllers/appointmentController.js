@@ -269,7 +269,7 @@ exports.getWorkingDaysAndDoctors = async (req, res) => {
       );
 
       return {
-        date: date.toDateString(),
+        date: date,
         doctors: workingDoctors.filter(doctor => doctor !== null),
       };
     })
