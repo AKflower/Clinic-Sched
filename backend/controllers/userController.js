@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 
 exports.getAllUsers = async (req, res) => {
@@ -48,6 +48,34 @@ exports.updateUser = async (req, res) => {
 exports.updateActiveUser = async (req, res) => {
   const { isActive } = req.body;
   const updateData = { isActive };
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+exports.updateForgot = async (req, res) => {
+  const updateData = { isForgot: true };
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const users = await User.findById(req.params.id);
+  const hashedPassword = await bcrypt.hash(users.phone, 10);
+
+  const updateData = { 
+    password: hashedPassword,
+    isForgot: false
+   };
 
   try {
     const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });

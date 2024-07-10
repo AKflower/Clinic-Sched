@@ -17,6 +17,7 @@ const doctorSchema = new Schema({
       reason: { type: String, required: true }
     }
   ],
+  isForgot: { type: Boolean, required: true,  default: false},
   isActive: { type: Boolean },
 });
 

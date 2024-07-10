@@ -93,6 +93,34 @@ exports.deleteDoctor = async (req, res) => {
   }
 };
 
+exports.updateForgot = async (req, res) => {
+  const updateData = { isForgot: true };
+
+  try {
+    const updatedDoctor = await Doctor.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.status(200).json(updatedDoctor);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const doctors = await Doctor.findById(req.params.id);
+  const hashedPassword = await bcrypt.hash(doctors.phone, 10);
+
+  const updateData = { 
+    password: hashedPassword,
+    isForgot: false
+   };
+
+  try {
+    const updatedDoctor = await Doctor.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.status(200).json(updatedDoctor);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 exports.getDoctorsWithAvailability = async (req, res) => {
   const { departmentId } = req.params;
   const { date, time } = req.query;

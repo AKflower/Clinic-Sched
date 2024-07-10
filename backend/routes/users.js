@@ -8,6 +8,8 @@ router.get('/:id', authenticateToken, authorizeRole(['admin']), userController.g
 router.post('/', authenticateToken, authorizeRole(['admin']), userController.addUser);
 router.put('/:id', authenticateToken, authorizeRole(['admin', 'user']), userController.updateUser);
 router.put('/active/:id', authenticateToken, authorizeRole(['admin']), userController.updateActiveUser);
+router.put('/forgot/:id', authenticateToken, authorizeRole(['user']), userController.updateForgot);
+router.put('/reset/:id', authenticateToken, authorizeRole(['admin']), userController.resetPassword);
 router.delete('/:id', authenticateToken, authorizeRole(['admin']), userController.deleteUser);
 
 

@@ -10,6 +10,7 @@ const userSchema = new Schema({
   birth: { type: Date },
   role: { type: String, enum: ['user'], default: 'user', required: true },
   appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
+  isForgot: { type: Boolean, required: true,  default: false},
   isActive: { type: Boolean, required: true,  default: true},
 });
 

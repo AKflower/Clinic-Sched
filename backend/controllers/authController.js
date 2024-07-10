@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const User = require('../models/User');
+const User = require('../models/user');
 const Doctor = require('../models/doctor');
 const Admin = require('../models/admin');
 const crypto = require('crypto');
@@ -39,6 +39,8 @@ exports.login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'Invalid phone or password.' });
     }
+
+    if (user.role != 'admin' && !user.isActive) return res.status(400).json({ message: 'Account is not active.' });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
