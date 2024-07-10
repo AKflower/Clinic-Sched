@@ -9,7 +9,7 @@ const appointmentSchema = new Schema({
   roomId: { type: Schema.Types.ObjectId, ref: 'Room'},
   date: { type: Date, required: true },
   timeId: { type: Number, ref: 'TimeSlot', required: true },
-  status: { type: String, enum: ['Wait for confirmation', 'Confirmed', 'Complete', 'Overdue'], default: 'Wait for confirmation', required: true },
+  status: { type: String, enum: ['Wait for payment', 'Paid','Confirmed', 'Complete', 'Overdue'], default: 'Wait for payment', required: true },
   note: { type: String }
 });
 

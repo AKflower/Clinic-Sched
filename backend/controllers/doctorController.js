@@ -34,12 +34,12 @@ exports.addDoctor = async (req, res) => {
 };
 
 exports.updateDayOff = async (req, res) => {
-  const { doctorId } = req.params;
+  const { id } = req.params;
   const { date, reason } = req.body;
 
   try {
     // Tìm bác sĩ dựa trên doctorId
-    const doctor = await Doctor.findById(doctorId);
+    const doctor = await Doctor.findById(id);
 
     if (!doctor) {
       return res.status(404).json({ message: 'Doctor not found.' });
@@ -141,13 +141,10 @@ exports.getDoctorsWithAvailability = async (req, res) => {
   const { date, time } = req.query;
 
   function isWeekend(date) {
-    // Tạo đối tượng Date từ chuỗi ngày
     const d = new Date(date);
     
-    // Lấy chỉ số ngày trong tuần (0: Chủ Nhật, 1: Thứ Hai, ..., 6: Thứ Bảy)
     const day = d.getDay();
     
-    // Kiểm tra xem có phải là Thứ Bảy (6) hoặc Chủ Nhật (0) hay không
     return day === 0 || day === 6;
   }
 
@@ -168,7 +165,7 @@ function findTimeSlot(time) {
     }
   }
 
-  return -1; // Nếu không tìm thấy slot phù hợp
+  return -1; 
 }
 const timeSlots = [
   { id: 1, name: '8:00', time: '08:00' },
@@ -263,4 +260,42 @@ exports.getWorkingDoctor = async (req, res) => {
   }
 };
 
+exports.getWorkingDaysByMonth = async (req, res) => {
+  const { id } = req.params;
+  const { month, year } = req.query;
+
+  try {
+    const monthNumber = parseInt(month);
+    const yearNumber = parseInt(year);
+
+    if (isNaN(monthNumber) || monthNumber < 1 || monthNumber > 12 || isNaN(yearNumber) || yearNumber < 1970 || yearNumber > 3000) {
+      return res.status(400).json({ message: 'Invalid month or year format.' });
+    }
+
+    const startDate = new Date(yearNumber, monthNumber - 1, 1);
+    const endDate = new Date(yearNumber, monthNumber, 0);
+
+    const doctor = await Doctor.findById(id);
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found.' });
+    }
+
+    const workingDays = [];
+    for (let day = 1; day <= endDate.getDate(); day++) {
+      const currentDate = new Date(yearNumber, monthNumber - 1, day);
+      const isDayOff = doctor.dayOff.some(dayOff =>
+        dayOff.date.toISOString().split('T')[0] === currentDate.toISOString().split('T')[0]
+      );
+
+      if (!isDayOff) {
+        workingDays.push(currentDate);
+      }
+    }
+
+    res.status(200).json(workingDays.length);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
 
