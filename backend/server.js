@@ -42,6 +42,7 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/timeSlots', timeSlotRoutes);
+app.use('/api/rooms', roomRoutes);
 
 // Serve static files
 app.use( '/assets', express.static( path.join( __dirname, 'assets' ) ) );

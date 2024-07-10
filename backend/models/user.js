@@ -7,6 +7,7 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   gender: { type: String },
+  birth: { type: Date },
   role: { type: String, enum: ['user'], default: 'user', required: true },
   appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
   isActive: { type: Boolean, required: true,  default: true},
