@@ -35,7 +35,7 @@ exports.addUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   const { name, phone, email } = req.body;
   const updateData = { name, phone, email };
-  
+
 
   try {
     const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });

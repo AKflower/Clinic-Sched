@@ -33,26 +33,28 @@ export default function Booking() {
             return false;
             
         }
-        else if (today>selectedDateCheck) {
-            console.log('case2')
+        else if (today.getDate()>selectedDateCheck.getDate()) {
+            console.log('case2',today.getDate()==selectedDateCheck.getDate())
 
             return true;
         }
-        else {
-            if (today.getHours() > slotHour) {
-                console.log('case3')
-
+        else if (today.getDate()==selectedDateCheck.getDate()){
+          console.log('case',today.getHours(), slotHour)
+          
+            if (today.getHours() < slotHour) {
                 return false;
             }
             
             // Nếu giờ hiện tại bằng slotHour, kiểm tra phút
-            if (today.getHours() === slotHour && today.getMinutes() >= slotMinute) {
-                return false;
+            if (today.getHours() === slotHour && today.getMinutes() >= slotMinute+30) {
+              console.log('case4');
+                return true;
             }
 
             return true;
             
         }
+        else return true;
       }
     const location = useLocation();
     const query = useQuery();

@@ -2,6 +2,11 @@ import styles from './appointment.module.scss';
 import { useState, useEffect } from 'react';
 import appointmentService from '../../services/appointment';
 import Input from '../../components/input/input';
+import Modal from 'react-modal';
+import CardInfor from '../../components/card/cardInfor';
+
+Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
+
 
 export default function Appointment () {
     const role = localStorage.getItem('role')
@@ -43,9 +48,10 @@ export default function Appointment () {
             var temp = timeSlots.find((a) => 
                 a.id === appointment.timeId
             )
-            temp.doctorId = appointment.doctorId;
-            temp.userId = appointment.userId;
-            temp.fileId = appointment.fileId;
+            temp.doctorId = appointment.doctorId || null;
+            temp.userId = appointment.userId || null;
+            temp.fileId = appointment.fileId || null;
+            temp.departmentId = appointment.departmentId || null;
 
         })
         console.log(timeSlots);
@@ -74,9 +80,10 @@ export default function Appointment () {
             var temp = timeSlots.find((a) => 
                 a.id === appointment.timeId
             )
-            temp.doctorId = appointment.doctorId;
-            temp.userId = appointment.userId;
-            temp.fileId = appointment.fileId;
+            temp.doctorId = appointment.doctorId || null;
+            temp.userId = appointment.userId || null;
+            temp.fileId = appointment.fileId || null;
+            temp.departmentId = appointment.departmentId || null;
 
             
         })
@@ -87,6 +94,22 @@ export default function Appointment () {
       } catch (error) {
         console.error('Error fetching user appointments:', error.message);
       }
+    };
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [appointment,setAppointment] = useState(null)
+    const handleSelectAppointment = function(appointment) {
+      console.log(appointment);
+        setAppointment(appointment);
+        openModal();
+    }
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setIsModalOpen(false);
+  
+  
     };
     const handleChangeDate = (e) => {
       var newDate = new Date(e.target.value);
@@ -122,7 +145,7 @@ export default function Appointment () {
         fetchUserAppointmentsByDate(userId, date);
         
       }
-    }, [ ]);
+    }, [role, doctorId, userId, date ]);
     if (!appointments) return null;
     else if (role=='user') return   (
 
@@ -136,33 +159,54 @@ export default function Appointment () {
         {timeSlots.map((timeSlot) => (
             <div className={styles.appointmentContainer}>
                 <div className={styles.timeSlot}>{timeSlot.name}</div>
-               {timeSlot.doctorId && <div className={styles.content}>
-                    <div style={{fontWeight:'600'}}>Bác sĩ {timeSlot.doctorId && timeSlot.doctorId.name}</div>
-                    <div style={{fontSize:'.75em'}}><span >{timeSlot.userId.name}</span> </div>
-                    <div style={{fontSize:'.75em'}}><span>Mã hồ sơ: #{timeSlot.fileId && timeSlot.fileId.fileid}</span></div>
-                    <div style={{fontSize:'.75em'}}><span>Triệu chứng: {timeSlot.fileId && timeSlot.fileId.symptom}</span></div>
+               {timeSlot.doctorId && <div className={styles.content} onClick={() => handleSelectAppointment(timeSlot)}>
+               <div style={{fontWeight:'600'}}>Khám {timeSlot.departmentId && timeSlot.departmentId.name.toLowerCase()}</div>
+                    <div style={{fontWeight:'400'}}>Bác sĩ: {timeSlot.doctorId && timeSlot.doctorId.name}</div>
+                    <div style={{fontSize:'.75em'}}> <span>Mã hồ sơ: #{timeSlot.fileId && timeSlot.fileId.fileid}</span></div>
+                    <div style={{fontSize:'.75em',display:'flex',gap:'2em'}}><span style={{fontWeight: '500'}}>{timeSlot.userId.name}</span><span>Triệu chứng: {timeSlot.fileId && timeSlot.fileId.symptom}</span></div>
+                    <div style={{fontSize:'.75em'}}></div>
                 </div>}
             </div>
         )
 
         )}
         </div>
-            
+        <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Add File Modal"
+        className={styles.modal}
+        overlayClassName={styles.overlay}
+      >
+        <h2>Thông tin cuộc hẹn</h2>
+          <div style={{gap:'1em',display:'flex',flexDirection:'column',overflow: 'auto',maxHeight: '80vh'}}>
+          <CardInfor title={'Thông tin bác sĩ'} fields={[{ label: 'Tên', value: appointment?.doctorId?.name || '' },{ label: 'Chuyên khoa', value: appointment?.departmentId?.name || '' },{ label: 'Giá', value: appointment?.doctorId?.price || '' }]} />
+         
+          <CardInfor title={'Thông tin người khám'} fields={[{ label: 'Tên', value: appointment?.userId?.name || '' },{ label: 'Triệu chứng', value: appointment?.fileId?.symptom || '' },{label: 'Mô tả', value: appointment?.fileId?.description || '' }]} />
+  
+          </div>
+          
+
+        
+      </Modal>
         </div>
     
     )
     else if (role=='doctor') return (
         <div className={styles.container}>
         <h1>Lịch khám</h1>  
-        <div className={styles.appointmentList}>
+        <div className={styles.date}>
+        <Input label='Chọn ngày' type="date" value={formatDateYYYMMDD(date)} onChange={handleChangeDate}/>
+        </div>        <div className={styles.appointmentList}>
         {timeSlots.map((timeSlot) => (
             <div className={styles.appointmentContainer}>
                 <div className={styles.timeSlot}>{timeSlot.name}</div>
                {
-                timeSlot.doctorId && <div className={styles.content}>
-                    <div style={{fontWeight:'600'}}>{timeSlot.userId && timeSlot.userId.name} - {timeSlot.fileId && formatDate(timeSlot.fileId.birthDate)}</div>
-                    <div style={{fontSize:'.75em'}}><span>Mã hồ sơ: #{timeSlot.fileId && timeSlot.fileId.fileid}</span></div>
-                    <div style={{fontSize:'.75em'}}><span>Triệu chứng: {timeSlot.fileId && timeSlot.fileId.symptom}</span></div>
+                timeSlot.doctorId && <div className={styles.content} onClick={() => handleSelectAppointment(timeSlot)}>
+                <div style={{fontWeight:'600'}}>Khám {timeSlot.departmentId && timeSlot.departmentId.name.toLowerCase()}</div>
+                    <div style={{fontWeight:'400'}}>{timeSlot.userId && timeSlot.userId.name} - {timeSlot.fileId && formatDate(timeSlot.fileId.birthDate)}</div>
+                    <div style={{fontSize:'.75em'}}> <span>Mã hồ sơ: #{timeSlot.fileId && timeSlot.fileId.fileid}</span></div>
+                    <div style={{fontSize:'.75em',display:'flex',gap:'2em'}}><span style={{fontWeight: '500'}}>{timeSlot.userId.name}</span><span>Triệu chứng: {timeSlot.fileId && timeSlot.fileId.symptom}</span></div>
                 </div>
             }
             </div>
@@ -170,7 +214,24 @@ export default function Appointment () {
 
         )}
         </div>
-            
+        <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Add File Modal"
+        className={styles.modal}
+        overlayClassName={styles.overlay}
+      >
+        <h2>Thông tincuộc hẹn</h2>
+          <div style={{gap:'1em',display:'flex',flexDirection:'column'}}>
+          <CardInfor title={'Thông tin bác sĩ'} fields={[{ label: 'Tên', value: appointment?.doctorId?.name || '' },{ label: 'Chuyên khoa', value: appointment?.departmentId?.name || '' },{ label: 'Giá', value: appointment?.doctorId?.price || '' }]} />
+         
+          <CardInfor title={'Thông tin người khám'} fields={[{ label: 'Tên', value: appointment?.userId?.name || '' },{ label: 'Triệu chứng', value: appointment?.fileId?.symptom || '' },{label: 'Mô tả', value: appointment?.fileId?.description || '' }]} />
+  
+          </div>
+          
+
+        
+      </Modal>
         </div>
     )
 }

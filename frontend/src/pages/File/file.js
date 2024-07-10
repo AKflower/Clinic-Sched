@@ -16,6 +16,7 @@ export default function File () {
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newFile, setNewFile] = useState({
+      userId: userId,
       name: '',
       gender: 'Nam',
       birthDate: '',  
@@ -87,6 +88,7 @@ export default function File () {
     const closeModal = () => {
       setIsModalOpen(false);
       setNewFile({
+
         symptom: '',
         description: '',
         date: '',

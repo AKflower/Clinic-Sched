@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 exports.getAllAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find();
+    const appointments = await Appointment.find().populate('fileId').populate('userId').populate('doctorId').populate('departmentId');;
     res.status(200).json(appointments);
   } catch (err) {
     res.status(500).json({ message: err.message });
