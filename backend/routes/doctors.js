@@ -14,5 +14,7 @@ router.post('/:doctorId/dayOff', authenticateToken, authorizeRole(['admin','doct
 router.get('/:date/working', authenticateToken, authorizeRole(['admin','doctor']), doctorController.getWorkingDoctor);
 router.put('/forgot/:id', authenticateToken, authorizeRole(['user']), doctorController.updateForgot);
 router.put('/reset/:id', authenticateToken, authorizeRole(['admin']), doctorController.resetPassword);
+router.put('/changePass/:id', authenticateToken, authorizeRole(['admin']), doctorController.updatePassword);
+
 
 module.exports = router;

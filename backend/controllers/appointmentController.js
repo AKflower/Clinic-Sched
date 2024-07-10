@@ -136,6 +136,7 @@ exports.updateActiveAppointment = async (req, res) => {
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
+}
 
 exports.getTotalAppointmentsByMonth = async (req, res) => {
   const { doctorId } = req.params;
