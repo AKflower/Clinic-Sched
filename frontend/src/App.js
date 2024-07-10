@@ -16,6 +16,8 @@ import Appointment from './pages/Appointment/appointment'
 import AppointmentManage from './pages/AppointmentManage/appointmentManage'
 import User from './pages/User/user'
 import Doctor from './pages/Doctor/doctor'
+import FileManage from './pages/FileManage/fileManage';
+import Department from './pages/Department/department'
 import { useEffect} from 'react'
  
 
@@ -57,6 +59,9 @@ const Main = () => {
             <Route path='/manage_user' element={<User />} />
             <Route path='/manage_doctor' element={<Doctor />} />
             <Route path='/manage_appointment' element={<AppointmentManage />} />
+            <Route path='/manage_file' element={<FileManage />} />
+            <Route path='/manage_department' element={<Department />} />
+            
           </Routes>
         </div>
       </div>
