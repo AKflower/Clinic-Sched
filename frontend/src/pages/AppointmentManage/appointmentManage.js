@@ -2,9 +2,11 @@ import styles from './appointmentManage.module.scss';
 import appointmentService from '../../services/appointment';
 import { useState,useEffect } from 'react';
 import Button from '../../components/button/button'
+import Input from '../../components/input/input';
 
 export default function AppointmentManage() {
     const [appointments,setAppointments] = useState([])
+    const [appointmentsBackup,setAppointmentsBackup] =  useState([]);
     useEffect(() => {
         fetchAppointments();
 
@@ -15,14 +17,29 @@ export default function AppointmentManage() {
         
         const sortedArray = appointments.sort((a, b) =>  new Date(b.date) - new Date(a.date));
         setAppointments(sortedArray);
+        setAppointmentsBackup(sortedArray);
         } catch (error) {
         console.error('Error fetching appointments:', error);
         }
     };
+    const handleFilter = async (e) => {
+      
+        const {value} = e.target;
+        if (value=='' || value==null) fetchAppointments()
+        console.log(value);
+     
+        var temp = appointmentsBackup.filter((app) => app.date.split("T")[0]==value);
+        setAppointments(temp);
+      }
     
     return (
         <div className={styles.container}>
+        <div className={styles.header}>
         <h2>Quản lý lịch khám</h2>  
+        <div style={{    width: '20em', margin:'0 0 1em 0'}}>
+          <Input label={'Ngày khám'} onChange={handleFilter} type={'date'}/>
+        </div> 
+        </div>
             <table className={styles.table}>
                 <thead>
                     <tr>

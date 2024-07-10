@@ -44,6 +44,7 @@ const departmentService = {
 
   // Sửa Department
   updateDepartment: async (id, name, description) => {
+    console.log(name,id,description);
     try {
       const response = await axiosInstance.put(`/departments/${id}`, { name, description });
       return response.data;

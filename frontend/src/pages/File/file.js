@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import fileService from '../../services/fileService';
 import Modal from 'react-modal';
 import Input from '../../components/input/input';
-import Select from '../../components/select/select'
+import Select from '../../components/select/select';
 
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
 

@@ -10,7 +10,7 @@ Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng d�
 export default function User () {
     const [users, setUsers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const [usersBackup,setUsersBackup] = useState([]);
   const [newUser, setNewUser] = useState({
     name: '',
     phone: '',
@@ -27,6 +27,7 @@ export default function User () {
     try {
       const users = await UserService.getAllUsers();
       setUsers(users);
+      setUsersBackup(users)
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -99,14 +100,28 @@ export default function User () {
     }
     catch(error){
       console.error('Error deleting user:', error);
-    }
+    } 
       
     }
-    
+    const handleFilter = async (e) => {
+      
+      const {value} = e.target;
+      if (value=='' || value==null) fetchUsers()
+      console.log(value);
+   
+      var temp = usersBackup.filter((user) => user.phone.includes(value));
+      setUsers(temp);
+    }
     return (
         
         <div className={styles.container}>
+        <div className={styles.header}>
         <h2>Quản lý người dùng</h2>  
+        <div style={{    width: '20em', margin:'0 0 1em 0'}}>
+          <Input label={'Số điện thoại'} onChange={handleFilter} type={'numeric'}/>
+        </div>
+        </div>
+       
             <table className={styles.table}>
                 <thead>
                     <tr>
