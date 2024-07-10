@@ -1,19 +1,25 @@
+const Appointment = require('../models/Appointment');
 const Room = require('../models/room');
 
 exports.createRoom = async (req, res) => {
-  const { userId, doctorId, startDateTime, endDateTime } = req.body;
+  const { userId, doctorId, appointmentId, startDateTime, endDateTime } = req.body;
 
   try {
     const newRoom = new Room({
       userId,
       doctorId,
+      appointmentId,
       startDateTime: new Date(startDateTime),
       endDateTime: new Date(endDateTime)
     });
 
-    await newRoom.save();
+    const savedRoom = await newRoom.save();
 
-    res.status(201).json(newRoom);
+     // Cập nhật mảng appointments của user
+     await Appointment.findByIdAndUpdate(appointmentId, {
+      $push: { roomId: savedRoom._id }
+    });
+    res.status(201).json(savedRoom);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error.' });

@@ -126,7 +126,17 @@ exports.getUserAppointmentsByDate = async (req, res) => {
   }
 };
 
+exports.updateActiveAppointment = async (req, res) => {
+  const { isActive } = req.body;
+  const updateData = { isActive };
 
+  try {
+    const updatedAppointment = await Appointment.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.status(200).json(updatedAppointment);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+}
 
 exports.getTotalAppointmentsByMonth = async (req, res) => {
   const { doctorId } = req.params;

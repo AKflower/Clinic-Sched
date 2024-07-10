@@ -104,6 +104,21 @@ exports.updateForgot = async (req, res) => {
   }
 };
 
+exports.updatePassword = async (req, res) => {
+  const { password } = req.body;
+  
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const updateData = { password: hashedPassword };
+
+  try {
+    const updatedDoctor = await Doctor.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.status(200).json(updatedDoctor);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 exports.resetPassword = async (req, res) => {
   const doctors = await Doctor.findById(req.params.id);
   const hashedPassword = await bcrypt.hash(doctors.phone, 10);
