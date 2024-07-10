@@ -23,6 +23,7 @@ export default function Home () {
     const [doctors, setDoctors] = useState([]);
     const [appointments,setAppointments] = useState([])
     const [files, setFiles] = useState([]);
+    const [workingDaysCount, setWorkingDaysCount] = useState(0);
 
 
 
@@ -40,9 +41,13 @@ export default function Home () {
             fetchDoctors();
             fetchUsers();
             fetchFiles();
+            
         }
            
-        if (role=='doctor') fetchTimeSlot();
+        if (role=='doctor') {
+            fetchWorkingDays();
+            fetchTimeSlot();
+        }
     }, []);
     const fetchFiles = async () => {
         try {
@@ -69,6 +74,20 @@ export default function Home () {
         console.error('Error fetching departments:', error.message);
         }
     };
+    const fetchWorkingDays = async () => {
+        const currentDate = new Date(); // Ngày và giờ hiện tại
+        const currentMonth = currentDate.getMonth() + 1; // Tháng hiện tại (tháng bắt đầu từ 0 nên cộng thêm 1)
+        const currentYear = currentDate.getFullYear(); 
+  
+        try {
+          const count = await doctorService.getWorkingDaysByMonth(doctorId, currentMonth, currentYear);
+          setWorkingDaysCount(count);
+        } catch (error) {
+          console.error('Error fetching working days:', error);
+        }
+      };
+  
+    
     const fetchDoctors = async () => {
         try {
         const doctors = await doctorService.getAllDoctors();
@@ -124,7 +143,7 @@ export default function Home () {
             <h1>Thống kê</h1>
             <div className={styles.departmentContainer}>
             <CardDashBoard data={{quant:timeSlot.length,text:'Lịch khám hôm nay'}} goto={'appointment'}/>
-            <CardDashBoard data={{quant:12,text:'Lịch khám trong tháng'}} goto={'appointment'}/>
+            <CardDashBoard data={{quant:workingDaysCount,text:'Lịch khám trong tháng'}} goto={'appointment'}/>
             </div>
             
         </div>

@@ -41,6 +41,12 @@ export default function Sidebar () {
                 </div>
             </Link>
     }
+        { role == 'doctor' && 
+            <Link to='/schedule'>
+        <div className={styles.item} style={path.includes('/schedule') ? {backgroundColor: '#17BB4F',color:'white'} : {}}>
+            <PersonOutlineIcon /><span>Lịch làm việc</span>
+        </div>
+    </Link>}
          {role == 'admin' &&   <>
             <Link to='/manage_appointment'>
                 <div className={styles.item} style={path.includes('/manage_appointment') ? {backgroundColor: '#17BB4F',color:'white'} : {}}>

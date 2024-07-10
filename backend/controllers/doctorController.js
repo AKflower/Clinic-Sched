@@ -35,8 +35,8 @@ exports.addDoctor = async (req, res) => {
 
 exports.updateDayOff = async (req, res) => {
   const { id } = req.params;
-  const { date, reason } = req.body;
-
+  const { date, reason } = req.body.dayOff;
+  console.log('Khoa: ',date,reason);
   try {
     // Tìm bác sĩ dựa trên doctorId
     const doctor = await Doctor.findById(id);
@@ -144,7 +144,7 @@ exports.getDoctorsWithAvailability = async (req, res) => {
     const d = new Date(date);
     
     const day = d.getDay();
-    
+     
     return day === 0 || day === 6;
   }
 
@@ -262,8 +262,9 @@ exports.getWorkingDoctor = async (req, res) => {
 
 exports.getWorkingDaysByMonth = async (req, res) => {
   const { id } = req.params;
+  console.log(req.query);
   const { month, year } = req.query;
-
+  console.log(month,year);
   try {
     const monthNumber = parseInt(month);
     const yearNumber = parseInt(year);

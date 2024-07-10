@@ -4,7 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 
 const CalendarComponent = ({ onChange, disabledDates }) => {
   const [date, setDate] = useState(new Date());
-
+  console.log('Test: ',disabledDates);
   const handleChange = (newDate) => {
     setDate(newDate);
     onChange(newDate);
@@ -15,9 +15,7 @@ const CalendarComponent = ({ onChange, disabledDates }) => {
     if (view === 'month') {
       const day = date.getDay();
       // Disable weekends
-      if (day === 0 || day === 6) {
-        return true;
-      }
+    
       // Check if date is in the list of disabled dates
       const dateString = date.toISOString().split('T')[0];
       if (disabledDates && disabledDates.includes(dateString)) {
@@ -35,7 +33,6 @@ const CalendarComponent = ({ onChange, disabledDates }) => {
         value={date}
         tileDisabled={isDateDisabled}
       />
-      <div></div>
     </div>
   );
 };

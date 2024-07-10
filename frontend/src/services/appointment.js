@@ -96,6 +96,15 @@ const appointmentService = {
       console.error('Error fetching user appointments:', error.message);
       throw error;
     }
+  },
+  updateAppointmentStatus: async (id, status) => {
+    try {
+      const response = await axiosInstance.patch(`/appointments/status/${id}`, { status });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating appointment status:', error.message);
+      throw error;
+    }
   }
 }
 

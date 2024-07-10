@@ -13,6 +13,7 @@ import appointmentService from '../../services/appointment';
 import { toast } from 'react-toastify';
 import CardFile from '../../components/card/cardFile'
 
+
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
 
 
@@ -145,10 +146,28 @@ export default function Booking() {
     setTimeSlotsBusy(data)
   }
 
+const getISOWeekNumber = (date) => {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); // Điều chỉnh về ngày Thứ 2 (ISO 8601)
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7); // Tính toán số tuần
+  return weekNo;
+};
+
+const isCurrentWeek = (date) => {
+  const currentWeekNumber = getISOWeekNumber(new Date());
+  const weekNumber = getISOWeekNumber(date);
+  return currentWeekNumber === weekNumber;
+};
   const handleDateChange = (date) => {
     
+    if (!isCurrentWeek(date)) {
+      toast.error('Chỉ có thể đặt lịch trong tuần!');
+      return;
+    }
     console.log(date);
     setSelectedDateCheck(date);
+    
     // Đảm bảo rằng ngày được định dạng chính xác theo "YYYY-MM-DD"
     const dateInput = new Date(date);
   
@@ -160,7 +179,7 @@ export default function Booking() {
     setSelectedDate(formattedDate);
   
     fetchTimeSlot(formattedDate);
-    openModal();
+     openModal();
   };
   const handleAddFile = async (e) => {
     e.preventDefault();
@@ -213,7 +232,6 @@ const handleConfirmAppointment = async (e) => {
         fileId: file._id,
         date: selectedDate,
         timeId: timeSlotSelected.id,
-        status: 'await', // Hoặc giá trị mặc định khác tùy vào yêu cầu của bạn
         note: '',
         departmentId: departmentId  // Ghi chú có thể để trống ban đầu
     };

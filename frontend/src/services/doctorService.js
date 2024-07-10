@@ -70,8 +70,10 @@ const doctorService = {
       throw new Error(error.response?.data?.message || error.message);
     }
   },
-
-  // Lấy danh sách Doctors theo departmentId và tính sẵn sàng (availability)
+  updateDayOff: async (id, dayOff, reason) => {
+    const response = await axiosInstance.post(`/doctors/${id}/dayOff`, {dayOff,reason});
+    return response.data;
+  },
   getDoctorsWithAvailability: async (departmentId, date, time) => {
     try {
         console.log(departmentId);
@@ -85,7 +87,20 @@ const doctorService = {
     } catch (error) {
       throw new Error(error.response?.data?.message || error.message);
     }
-  }
+  },
+  getWorkingDaysByMonth: async (doctorId, month, year) => {
+    try {
+      const response = await axiosInstance.get(`/doctors/wdbm/${doctorId}?year=${year}&month=${month}`, {
+        // params: {
+        //   month,
+        //   year,
+        // },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default doctorService;

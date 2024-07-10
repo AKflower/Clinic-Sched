@@ -1,0 +1,92 @@
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 2em;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1002;
+    width: 90%;
+    max-width: 500px;
+  }
+  
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+  }
+.button{
+    display: flex;
+    justify-content: flex-end;
+    div {
+        width: 5em;
+        margin-left: 1em;
+    }
+}
+.timeSlotContainer{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: .5em;
+    .timeSlot{
+        background-color: silver;
+        padding: .5em;
+        text-align: center;
+        border-radius: 5px;
+        cursor: pointer;
+        &:hover{
+            background-color: rgb(70, 70, 70);
+            color:white;
+        }
+    }
+    .timeSlotBusy{
+        background-color: rgb(243, 136, 55);
+        padding: .5em;
+        color:white;
+        text-align: center;
+        border-radius: 5px;
+  
+    }
+    .timeSlotSelected{
+        background-color: rgb(86, 243, 55);
+        padding: .5em;
+        color:white;
+        text-align: center;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+}
+.btnContainer{
+    display: flex;
+    margin: 0 0 0 1em;
+    column-gap: 1em;
+    div {
+        margin: 0;
+        width: 5em;
+    }
+}
+.form{
+    
+    div {
+        margin-top: 1em;
+    }
+}
+.fileContainer {
+    overflow: auto;
+    max-height: 70vh;
+    padding: 0 0 1em 0;
+    &>div{
+        margin-top: 1em;
+    }
+}
+.file {
+    padding: 1em 2em;
+    background: aquamarine;
+    border-radius: 10px;
+    color: #3f3f3f;
+}

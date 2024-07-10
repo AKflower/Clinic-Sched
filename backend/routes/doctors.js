@@ -15,7 +15,7 @@ router.get('/:date/working', authenticateToken, authorizeRole(['admin','doctor']
 router.put('/forgot/:id', authenticateToken, authorizeRole(['user']), doctorController.updateForgot);
 router.put('/reset/:id', authenticateToken, authorizeRole(['admin']), doctorController.resetPassword);
 router.put('/changePass/:id', authenticateToken, authorizeRole(['admin']), doctorController.updatePassword);
-router.get('/wdbm/:id', authenticateToken, authorizeRole(['admin']), doctorController.getWorkingDaysByMonth);
+router.get('/wdbm/:id', authenticateToken, authorizeRole(['admin','doctor']), doctorController.getWorkingDaysByMonth);
 
 
 module.exports = router;

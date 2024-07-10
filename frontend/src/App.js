@@ -19,6 +19,7 @@ import Doctor from './pages/Doctor/doctor'
 import FileManage from './pages/FileManage/fileManage';
 import Department from './pages/Department/department'
 import { useEffect} from 'react'
+import Schedule from './pages/Schedule/schedule'
  
 
 
@@ -61,7 +62,7 @@ const Main = () => {
             <Route path='/manage_appointment' element={<AppointmentManage />} />
             <Route path='/manage_file' element={<FileManage />} />
             <Route path='/manage_department' element={<Department />} />
-            
+            <Route path='/schedule' element={<Schedule />} />
           </Routes>
         </div>
       </div>
