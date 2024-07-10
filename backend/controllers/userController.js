@@ -20,9 +20,9 @@ exports.getUserById = async (req, res) => {
 };
 
 exports.addUser = async (req, res) => {
-  const { name, phone, email, password, role } = req.body;
+  const { name, phone, email, password, role, birth } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ name, phone, email, password: hashedPassword, role });
+  const newUser = new User({ name, phone, email, password: hashedPassword, role, birth });
 
   try {
     const savedUser = await newUser.save();
@@ -33,8 +33,8 @@ exports.addUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-  const { name, phone, email } = req.body;
-  const updateData = { name, phone, email };
+  const { name, phone, email, birth } = req.body;
+  const updateData = { name, phone, email, birth };
 
 
   try {

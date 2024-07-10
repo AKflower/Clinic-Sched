@@ -9,6 +9,7 @@ const appointmentRoutes = require('./routes/appointments');
 const departmentRoutes = require('./routes/departments');
 const fileRoutes = require('./routes/files');
 const timeSlotRoutes = require('./routes/timeSlots');
+const roomRoutes = require('./routes/rooms');
 const app = express();
 let server = require( 'http' ).Server( app );
 let io = require( 'socket.io' )( server );

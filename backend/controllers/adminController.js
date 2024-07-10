@@ -20,9 +20,9 @@ exports.getAdminById = async (req, res) => {
 };
 
 exports.addAdmin = async (req, res) => {
-  const { name, phone, email, password, gender } = req.body;
+  const { name, phone, email, password, gender, birth } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newAdmin = new Admin({ name, phone, email, password: hashedPassword, gender });
+  const newAdmin = new Admin({ name, phone, email, password: hashedPassword, gender, birth });
 
   try {
     const savedAdmin = await newAdmin.save();
@@ -33,8 +33,8 @@ exports.addAdmin = async (req, res) => {
 };
 
 exports.updateAdmin = async (req, res) => {
-  const { name, phone, email, password } = req.body;
-  const updateData = { name, phone, email };
+  const { name, phone, email, password, birth } = req.body;
+  const updateData = { name, phone, email, birth };
   if (password) {
     updateData.password = await bcrypt.hash(password, 10);
   }

@@ -17,7 +17,7 @@ const doctorSchema = new Schema({
       reason: { type: String, required: true }
     }
   ],
-  isActive: { type: Boolean, required: true },
+  isActive: { type: Boolean },
 });
 
 module.exports = mongoose.model('Doctor', doctorSchema);
