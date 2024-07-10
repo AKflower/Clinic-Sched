@@ -12,5 +12,6 @@ router.put('/:id', authenticateToken, authorizeRole(['admin', 'doctor']), doctor
 router.put('/active/:id', authenticateToken, authorizeRole(['admin']), doctorController.updateActiveDoctor);
 router.delete('/:id', authenticateToken, authorizeRole(['admin']), doctorController.deleteDoctor);
 router.post('/:doctorId/dayOff', authenticateToken, authorizeRole(['admin','doctor']), doctorController.updateDayOff);
+router.get('/:date/working', authenticateToken, authorizeRole(['admin','doctor']), doctorController.getWorkingDoctor);
 
 module.exports = router;

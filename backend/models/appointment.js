@@ -8,7 +8,7 @@ const appointmentSchema = new Schema({
   departmentId: { type: Schema.Types.ObjectId, ref: 'Department', required: true },
   date: { type: Date, required: true },
   timeId: { type: Number, ref: 'TimeSlot', required: true },
-  status: { type: String, required: true },
+  status: { type: String, enum: ['Wait for confirmation', 'Confirmed', 'Complete', 'Overdue'], default: 'Wait for confirmation', required: true },
   note: { type: String }
 });
 

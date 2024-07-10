@@ -7,7 +7,6 @@ const timeSlotSchema = new mongoose.Schema({
   time: { type: String, required: true }
 });
 
-// Tự động tăng id sau mỗi lần tạo
 timeSlotSchema.plugin(AutoIncrement, { inc_field: 'timeid' });
 
 

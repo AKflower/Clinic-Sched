@@ -152,11 +152,7 @@ exports.getTotalAppointmentsByMonth = async (req, res) => {
       doctorId,
       date: { $gte: startDate, $lte: endDate }
     });
-    const tappointments = await Appointment.find({
-      doctorId,
-      date: { $gte: startDate, $lte: endDate }
-    });
-    console.log(tappointments)
+    
     res.status(200).json(totalAppointments);
   } catch (error) {
     console.error(error);
@@ -187,6 +183,34 @@ exports.getPatientRecordsByDoctor = async (req, res) => {
     }));
 
     res.status(200).json(patientRecords);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+exports.updateAppointmentStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const validStatuses = ['Wait for confirmation', 'Confirmed', 'Complete', 'Overdue'];
+  
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ message: 'Invalid status.' });
+  }
+
+  try {
+    const appointment = await Appointment.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found.' });
+    }
+
+    res.status(200).json(appointment);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error.' });

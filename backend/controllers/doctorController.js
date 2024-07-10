@@ -159,17 +159,17 @@ exports.getDoctorsWithAvailability = async (req, res) => {
     const appointmentsInTimeSlot = await Appointment.find({ date, timeId });
 
     // Tạo danh sách các bác sĩ với trạng thái bận rộn
-    const doctorsWithAvailability = doctorsInDepartment.map(doctor => {
+    const doctorsWithAvailabilityA = doctorsInDepartment.map(doctor => {
       const isBusy = appointmentsInTimeSlot.some(appointment => 
-        appointment.doctorId.toString() === doctor._id.toString()
+        doctor.dayOff === doctor._id.toString()
       );
       if (isWeekend(date)) return {
         ...doctor._doc,
-        isBusy:true
+        isBusy: true
       };
       if (timeId == -1 ) return {
         ...doctor._doc,
-        isBusy:true
+        isBusy: true
       };
       return {
         ...doctor._doc,
@@ -177,8 +177,55 @@ exports.getDoctorsWithAvailability = async (req, res) => {
       };
     });
 
+    const doctorsWithAvailability = await doctorsWithAvailabilityA.find({
+      $nor: [
+        {
+          dayOff: {
+            $elemMatch: {
+              date
+            }
+          }
+        }
+      ]
+    });
+
     res.status(200).json(doctorsWithAvailability);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+
+exports.getWorkingDoctor = async (req, res) => {
+  const { date } = req.params;
+  console.log(date)
+  try {
+    const queryDate = new Date(date);
+
+    if (isNaN(queryDate)) {
+      return res.status(400).json({ message: 'Invalid date format.' });
+    }
+
+    // Tìm bác sĩ không có lịch nghỉ trong ngày này
+    const doctors = await Doctor.find({
+      $nor: [
+        {
+          dayOff: {
+            $elemMatch: {
+              date
+            }
+          }
+        }
+      ]
+    });
+  
+
+    res.status(200).json(doctors);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+
