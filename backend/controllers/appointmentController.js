@@ -143,21 +143,17 @@ exports.getTotalAppointmentsByMonth = async (req, res) => {
   const { month, year } = req.query;
   
   try {
-    // Chuyển đổi month và year từ string thành số nguyên
     const monthNumber = parseInt(month);
     const yearNumber = parseInt(year);
 
-    // Kiểm tra tính hợp lệ của monthNumber và yearNumber
     if (isNaN(monthNumber) || monthNumber < 1 || monthNumber > 12 || isNaN(yearNumber) || yearNumber < 1970 || yearNumber > 3000) {
       return res.status(400).json({ message: 'Invalid month or year format.' });
     }
 
-    // Tạo object Date để lọc theo tháng và năm
     const startDate = new Date(`${year}-${month}-01T00:00:00Z`);
     const nextMonthDate = new Date(yearNumber, monthNumber, 1);
     const endDate = new Date(nextMonthDate.getTime() - 1);
 
-    // Tạo query để đếm số lượng các appointment
     const totalAppointments = await Appointment.countDocuments({
       doctorId,
       date: { $gte: startDate, $lte: endDate }

@@ -19,7 +19,7 @@ const doctorSchema = new Schema({
     }
   ],
   isForgot: { type: Boolean, required: true,  default: false},
-  isActive: { type: Boolean },
+  isActive: { type: Boolean, required: true,  default: true},
 });
 
 module.exports = mongoose.model('Doctor', doctorSchema);
