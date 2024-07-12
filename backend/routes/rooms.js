@@ -7,4 +7,5 @@ router.get('/:roomId', roomController.getRoomById);
 router.put('/:roomId', roomController.updateRoom);
 router.delete('/:roomId', roomController.deleteRoom);
 
+
 module.exports = router;

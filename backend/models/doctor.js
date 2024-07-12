@@ -12,6 +12,7 @@ const doctorSchema = new Schema({
   role: { type: String, enum: ['doctor'], default: 'doctor', required: true },
   department: [{ type: Schema.Types.ObjectId, ref: 'Department', required: true }],
   appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
+  price: { type: Number, default: 100000 },
   dayOff: [
     {
       date: { type: Date, required: true },

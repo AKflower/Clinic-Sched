@@ -5,7 +5,7 @@ const { authenticateToken, authorizeRole } = require('../middleware/auth');
 
 router.get('/department/:departmentId/availability', authenticateToken, authorizeRole(['admin', 'user']), doctorController.getDoctorsWithAvailability);
 router.get('/', authenticateToken, doctorController.getAllDoctors);
-router.get('/:id', authenticateToken, doctorController.getDoctorById);
+router.get('/:id', authenticateToken,authorizeRole(["admin","doctor","user"]), doctorController.getDoctorById);
 router.post('/', authenticateToken, authorizeRole(['admin']), doctorController.addDoctor);
 router.put('/:id', authenticateToken, authorizeRole(['admin', 'doctor']), doctorController.updateDoctor);
 router.put('/active/:id', authenticateToken, authorizeRole(['admin']), doctorController.updateActiveDoctor);

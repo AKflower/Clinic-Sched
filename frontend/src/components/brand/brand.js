@@ -8,7 +8,7 @@ export default function Brand({size=1}) {
                 <img src={logo} style={{width:size*4+'em'}}/>
             </div>
             <div className={styles.brandName} style={{fontSize:size+'em'}}>
-                <span>Clinic</span><span>Sched</span>
+                <span>UTE</span><span>Health</span>
             </div>
         </div>
     )

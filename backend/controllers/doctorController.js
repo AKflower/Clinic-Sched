@@ -252,7 +252,7 @@ exports.getWorkingDoctor = async (req, res) => {
         }
       ]
     });
-  
+    
 
     res.status(200).json(doctors);
   } catch (error) {

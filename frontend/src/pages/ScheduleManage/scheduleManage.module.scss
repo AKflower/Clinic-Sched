@@ -90,6 +90,13 @@
     border-radius: 10px;
     color: #3f3f3f;
 }
-.backgroundGreen{
-    background-color: #89c39d !important;
-  }
+.doctorList{
+    max-height: 20em;
+    overflow: auto;
+    .doctor{
+        padding: .5em 1em;
+        background: #3cd26d;
+        border-radius: 10px;
+        margin: 1em 0;
+    }
+}

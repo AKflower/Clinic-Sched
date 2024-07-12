@@ -19,9 +19,9 @@ import Doctor from './pages/Doctor/doctor'
 import FileManage from './pages/FileManage/fileManage';
 import Department from './pages/Department/department'
 import { useEffect} from 'react'
-import Schedule from './pages/Schedule/schedule'
- 
-
+import Schedule from './pages/Schedule/schedule';
+import ScheduleManage from './pages/ScheduleManage/scheduleManage';
+import Room from './pages/Room/room';
 
 
 const Main = () => {
@@ -43,7 +43,7 @@ const Main = () => {
       <UserProfile />
       <div className='d-flex main' style={{ margin: '0' }}>
       <ToastContainer />
-        <div className='container' style={(path.includes('/login') || path.includes('/register') || path.includes('/forgot')) ? {
+        <div className='container' style={(path.includes('/login') || path.includes('/register') || path.includes('/forgot')) || path.includes('/room') ? {
           margin: '0',
           width: '100vw',
           padding: '0'
@@ -63,7 +63,9 @@ const Main = () => {
             <Route path='/manage_file' element={<FileManage />} />
             <Route path='/manage_department' element={<Department />} />
             <Route path='/schedule' element={<Schedule />} />
-          </Routes>
+            <Route path='/manage_schedule' element={<ScheduleManage />} />
+            <Route path='/room' element={<Room />} />
+            </Routes>
         </div>
       </div>
     </>

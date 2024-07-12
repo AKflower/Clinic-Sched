@@ -27,9 +27,9 @@ exports.createRoom = async (req, res) => {
 };
 
 exports.getRoomById = async (req, res) => {
-
+  console.log('GeTRoomById',req.params);
   try {
-    const room = await Room.findById(req.params.id);
+    const room = await Room.findById(req.params.roomId);
 
     if (!room) {
       return res.status(404).json({ message: 'Room not found.' });

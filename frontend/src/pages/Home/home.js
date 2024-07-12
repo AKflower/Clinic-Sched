@@ -7,7 +7,7 @@ import departmentService from '../../services/departmentService';
 import appointmentService from '../../services/appointment'
 import doctorService from '../../services/doctorService';
 import fileService from '../../services/fileService';
-
+import AppointmentChart from '../../components/Chart/chart'
 
 import CardDashBoard from '../../components/card/cardDashboard';
 
@@ -101,8 +101,7 @@ export default function Home () {
         try {
         const appointments = await appointmentService.getAllAppointments();
         
-        const sortedArray = appointments.sort((a, b) =>  new Date(b.date) - new Date(a.date));
-        setAppointments(sortedArray);
+        setAppointments(appointments);
         } catch (error) {
         console.error('Error fetching appointments:', error);
         }
@@ -152,13 +151,12 @@ export default function Home () {
         <div className={styles.container}>
         <h1>Thống kê</h1>
         <div className={styles.departmentContainer}>
-            <CardDashBoard data={{quant:departments.length,text:'Chuyên khoa'}} goto={'manage_department'}/>
             <CardDashBoard data={{quant:users.length,text:'Người dùng'}} goto={'manage_user'}/>
             <CardDashBoard data={{quant:doctors.length,text:'Bác sĩ'}} goto={'manage_doctor'}/>
-            <CardDashBoard data={{quant:appointments.length,text:'Lịch khám'}} goto={'manage_appointment'}/>
             <CardDashBoard data={{quant:files.length,text:'Hồ sơ bệnh án'}} goto={'manage_file'}/>
-
+         
         </div>
+        <AppointmentChart appointments={appointments}/>
         
     </div>
     )

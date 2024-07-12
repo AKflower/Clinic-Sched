@@ -162,7 +162,7 @@ export default function Doctor () {
               <td>{doctor.name}</td>
               <td>{doctor.phone}</td>
               <td>{doctor.email}</td>
-              <td>{doctor.departmentId}</td>
+              <td>{doctor.department[0]}</td>
               <td>
                 {doctor.isActive ? (
                   <Button name='Vô hiệu' color='red' onClick={(e) => handleUpdateActive(doctor._id, false, e)} />

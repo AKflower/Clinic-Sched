@@ -36,3 +36,12 @@ a {
 .react-calendar__navigation__label__labelText, .react-calendar__navigation__label__labelText--from{
   font-family: Montserrat !important;
 }
+.flipped-video {
+  transform: scaleX(-1); 
+}
+.video-box {
+  padding: 1em;
+  box-shadow: 1px 2px 3px silver;
+  background: #fffefe;
+  border-radius: 10px;
+}

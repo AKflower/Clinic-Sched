@@ -9,7 +9,17 @@ const CalendarComponent = ({ onChange, disabledDates }) => {
     setDate(newDate);
     onChange(newDate);
   };
-
+    // Function to determine if a week should be disabled
+    // const isWeekDisabled = ({ date }) => {
+    //   const weekStart = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
+    //   const weekEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate() + (6 - date.getDay()));
+  
+    //   return disabledWeeks.some(disabledWeek => {
+    //     const disabledWeekStart = new Date(disabledWeek.getFullYear(), disabledWeek.getMonth(), disabledWeek.getDate() - disabledWeek.getDay());
+    //     const disabledWeekEnd = new Date(disabledWeek.getFullYear(), disabledWeek.getMonth(), disabledWeek.getDate() + (6 - disabledWeek.getDay()));
+    //     return weekStart.getTime() === disabledWeekStart.getTime() && weekEnd.getTime() === disabledWeekEnd.getTime();
+    //   });
+    // };
   // Function to determine if a date should be disabled
   const isDateDisabled = ({ date, view }) => {
     if (view === 'month') {

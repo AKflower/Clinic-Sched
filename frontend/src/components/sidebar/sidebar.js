@@ -9,7 +9,7 @@ import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import ApartmentIcon from '@mui/icons-material/Apartment';
-
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 
 export default function Sidebar () {
     const role = localStorage.getItem('role')
@@ -17,7 +17,7 @@ export default function Sidebar () {
     console.log(path);  
     
     return (
-        <div className={styles.container} style={{display:path.includes('/login') || path.includes('/register') || path.includes('/forgot') ? 'none' : 'block'}}>
+        <div className={!(role=='admin') ? styles.container: styles.containerAdmin} style={{display:path.includes('/login') || path.includes('/register') || path.includes('/forgot') || path.includes('/room')  ? 'none' : 'block'}}>
             <div style={{margin: '0 0 0 2em'}}><Brand size={1} /></div>
             
             <Link to='/home'>
@@ -73,6 +73,11 @@ export default function Sidebar () {
                 <ApartmentIcon /><span>Quản lý chuyên khoa</span>
             </div>
             </Link>
+            <Link to='/manage_schedule'>
+            <div className={styles.item} style={path.includes('/manage_schedule') ? {backgroundColor: '#17BB4F',color:'white'} : {}}>
+            <EventAvailableIcon /><span>Quản lý lịch làm việc</span>
+            </div>
+        </Link>
             </>
         }
         </div>  

@@ -13,7 +13,7 @@ export default function UserProfile () {
 
     return (
         <>
-        {!(path.includes('/login') || path.includes('/register') || path.includes('/forgot')) && <div className={styles.container}>
+        {!(path.includes('/login') || path.includes('/register') || path.includes('/forgot') ||  path.includes('/room') ) && <div className={styles.container}>
             <div className={styles.avatar}></div>
             <div className={styles.name}>{name}</div>
             <div style={{cursor: 'pointer'}} onClick={logOut}><LogoutIcon /></div>

@@ -5,6 +5,9 @@ import Input from '../../components/input/input';
 import Modal from 'react-modal';
 import CardInfor from '../../components/card/cardInfor';
 import Button from '../../components/button/button';
+import payment from '../../assets/images/qr.jpg'
+import { toast } from 'react-toastify';
+
 
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
 
@@ -138,6 +141,7 @@ export default function Appointment() {
             }
         }
     };
+    
     const handlePay = async () => {
       if (appointment) {
           try {
@@ -147,7 +151,8 @@ export default function Appointment() {
               };
               await appointmentService.updateAppointmentStatus(appointment._id, 'Paid');
               setAppointment(updatedAppointment);
-              closeModal();
+              closePaymentModal();
+              toast.success('Chờ xác nhận');
               if (role === 'doctor') {
                   fetchDoctorAppointmentsByDate(doctorId, date);
               } else {
@@ -191,6 +196,7 @@ export default function Appointment() {
                                 <div style={{ fontSize: '.75em' }}> <span>Mã hồ sơ: #{timeSlot.fileId && timeSlot.fileId.fileid}</span></div>
                                 <div style={{ fontSize: '.75em', display: 'flex', gap: '2em' }}><span style={{ fontWeight: '500' }}>{timeSlot.userId.name}</span><span>Triệu chứng: {timeSlot.fileId && timeSlot.fileId.symptom}</span></div>
                                 <div style={{ fontSize: '.75em' }}></div>
+
                             </div>}
                         </div>
                     ))}
@@ -207,19 +213,21 @@ export default function Appointment() {
                         <CardInfor title={'Thông tin bác sĩ'} fields={[{ label: 'Tên', value: appointment?.doctorId?.name || '' }, { label: 'Chuyên khoa', value: appointment?.departmentId?.name || '' }, { label: 'Giá', value: appointment?.doctorId?.price || '' }]} />
 
                         <CardInfor title={'Thông tin người khám'} fields={[{ label: 'Tên', value: appointment?.userId?.name || '' }, { label: 'Triệu chứng', value: appointment?.fileId?.symptom || '' }, { label: 'Mã hồ sơ', value: appointment?.fileId?.fileid || '' }]} />
-                        {appointment?.status=="Wait for confirmation" && <div style={{marginTop:'1em'}}><Button name='Thanh toán' onClick={openPaymentModal}  /></div>}
+                        {appointment?.status=="Wait for payment" && <div style={{marginTop:'1em'}}><Button name='Thanh toán' onClick={openPaymentModal}  /></div>}
+                        {appointment?.status=="Confirmed" && <div style={{marginTop:'1em'}}><Button name='Gọi ngay' onClick={openPaymentModal}  /></div>}
+
                     </div>
                 </Modal>
                 <Modal
                     isOpen={isPaymentModalOpen}
                     onRequestClose={closePaymentModal}
                     contentLabel="Payment Modal"
-                    className={styles.modal}
+                    className={styles.modal+' '+styles.backgroundGreen}
                     overlayClassName={styles.overlay}
                 >
-                    <h2>Thanh toán</h2>
-                    <p>Thông tin thanh toán của bạn ở đây...</p>
-                    <div style={{display:'flex',flexDirection:'row',float:'right'}}>
+                    <h2 style={{color:'white'}}>Thanh toán</h2>
+                    <div className='d-flex center'><img src={payment} style={{maxHeight: '20em'}}/></div>
+                    <div style={{display:'flex',flexDirection:'row',float:'right',gap:'1em'}}>
                         <div style={{minWidth:'6em'}}><Button onClick={closePaymentModal} name={'Đóng'} color='red'/></div>
                         <div style={{minWidth:'6em'}}><Button onClick={handlePay} name={'Xác nhận'} /></div>
                     </div>

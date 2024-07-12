@@ -101,6 +101,27 @@ const doctorService = {
       throw error;
     }
   },
+  getWorkingDoctor: async (date) => {
+
+    const queryDate = new Date(date);
+    queryDate.setDate(queryDate.getDate() + 1);
+    queryDate.setUTCHours(0, 0, 0, 0);
+  
+    
+
+ 
+    const timestamp = queryDate.toISOString();
+    console.log(timestamp);
+    try {
+      const response = await axiosInstance.get(`doctors/${timestamp}/working`, {
+       
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching working doctors:', error);
+      throw error;
+    }
+  },
 };
 
 export default doctorService;

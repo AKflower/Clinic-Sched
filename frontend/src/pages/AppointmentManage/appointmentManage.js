@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import Button from '../../components/button/button';
 import Input from '../../components/input/input';
 import Modal from 'react-modal';
+import DoneIcon from '@mui/icons-material/Done';
+import roomService from '../../services/roomService'
+import { toast } from 'react-toastify'
 
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
 
@@ -46,9 +49,11 @@ export default function AppointmentManage() {
     }
   };
 
-  const handleDeleteAppointment = async (id) => {
+  const handleDeleteAppointment = async (id,e) => {
+    e.stopPropagation()
     try {
       await appointmentService.deleteAppointment(id);
+      toast.success('Xóa thành công!');
       fetchAppointments();
     } catch (error) {
       console.error('Error deleting appointment:', error);
@@ -75,6 +80,26 @@ export default function AppointmentManage() {
       [name]: value,
     }));
   };
+  const handleUpdateStatus = async (appointment,status,e) => {
+    e.stopPropagation()
+    try {
+      const roomData = {
+        userId : appointment.userId,
+        doctorId: appointment.doctorId,
+        appointmentId: appointment._id,
+        startDateTime: appointment.date,
+        endDateTime: appointment.date,
+      }
+      await roomService.createRoom(roomData)
+      await  appointmentService.updateAppointmentStatus(appointment._id,status);
+      fetchAppointments();
+      toast.success('Phê duyệt thành công!')
+    } catch (error) {
+      console.error('Error updating appointment status:', error);
+    }
+   
+    
+  }
 
   return (
     <div className={styles.container}>
@@ -109,7 +134,13 @@ export default function AppointmentManage() {
               <td>{appointment?.departmentId?.name || ''}</td>
               <td>{appointment.fileId.symptom}</td>
               <td>
-                <Button name="Xóa" color="red" onClick={(e) => { e.stopPropagation(); handleDeleteAppointment(appointment._id); }} />
+              <div className='d-flex center' style={{gap:'1em'}}>
+              {appointment?.status=="Paid" && <div style={{minWidth:'6em'}}> <Button name="Xác nhận" color="green" onClick={(e) => handleUpdateStatus(appointment,"Confirmed",e)} /></div>}
+              {appointment?.status=="Confirmed" && <div style={{color:'green',minWidth:'6em',textAlign:'center'}}><DoneIcon /></div>}
+              <div style={{minWidth:'4em'}}><Button name="Xóa" color="red" onClick={(e) => handleDeleteAppointment(appointment._id,e)} /></div>
+              
+              </div>
+              
               </td>
             </tr>
           ))}

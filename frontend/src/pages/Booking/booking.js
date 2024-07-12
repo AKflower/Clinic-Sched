@@ -12,6 +12,7 @@ import Select from '../../components/select/select';
 import appointmentService from '../../services/appointment';
 import { toast } from 'react-toastify';
 import CardFile from '../../components/card/cardFile'
+import payment from '../../assets/images/QRpayment.jpg'
 
 
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
@@ -102,7 +103,8 @@ export default function Booking() {
     const [file,setFile] = useState()
     const [selectedFile, setSelectedFile] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
     const [timeSlotsBusy,setTimeSlotsBusy] = useState([])
     const [timeSlotSelected,setTimeSlotSelected] = useState(null)
     const [newFile, setNewFile] = useState({
@@ -159,6 +161,7 @@ const isCurrentWeek = (date) => {
   const weekNumber = getISOWeekNumber(date);
   return currentWeekNumber === weekNumber;
 };
+
   const handleDateChange = (date) => {
     
     if (!isCurrentWeek(date)) {
@@ -213,16 +216,16 @@ const checkTimeSlot = (timeSlotsBusy,date) => {
 }
 const handleConfirmAppointment = async (e) => {
     e.preventDefault()
-    if (!timeSlotSelected) {
-        console.error('Please select a time slot.');
-        toast.error(`Vui lòng chọn khung giờ!`);
-        return;
-    }
-    if (!file) {
-        console.error('Please select a file');
-        toast.error(`Vui lòng chọn hồ sơ!`);
-        return;
-    }
+    // if (!timeSlotSelected) {
+    //     console.error('Please select a time slot.');
+    //     toast.error(`Vui lòng chọn khung giờ!`);
+    //     return;
+    // }
+    // if (!file) {
+    //     console.error('Please select a file');
+    //     toast.error(`Vui lòng chọn hồ sơ!`);
+    //     return;
+    // }
 
     // Thay đổi userId và doctorId tùy vào cách bạn lưu thông tin người dùng và bác sĩ
     // const date = formatDate(selectedDate)
@@ -232,6 +235,7 @@ const handleConfirmAppointment = async (e) => {
         fileId: file._id,
         date: selectedDate,
         timeId: timeSlotSelected.id,
+        status: 'Paid',
         note: '',
         departmentId: departmentId  // Ghi chú có thể để trống ban đầu
     };
@@ -239,8 +243,9 @@ const handleConfirmAppointment = async (e) => {
     try {
         const newAppointment = await appointmentService.addAppointment(newAppointmentData);
         console.log('New Appointment:', newAppointment);
-        toast.success(`Đặt lịch thành công!`);
+        toast.success(`Chờ admin xác nhận!`);
         // Thực hiện các hành động khác sau khi lưu thành công, ví dụ đóng modal
+        closePaymentModal()
         closeModal();
     } catch (error) {
         console.error('Error adding appointment:', error.message);
@@ -274,7 +279,43 @@ const handleConfirmAppointment = async (e) => {
     setFile(file)
     closeNestedModal();
   }
+  const openPaymentModal = (e) => {
+    e.preventDefault()
+    if (!timeSlotSelected) {
+      console.error('Please select a time slot.');
+      toast.error(`Vui lòng chọn khung giờ!`);
+      return;
+  }
+  if (!file) {
+      console.error('Please select a file');
+      toast.error(`Vui lòng chọn hồ sơ!`);
+      return;
+  }
+
+
+    setIsPaymentModalOpen(true);
+};
+
+const closePaymentModal = () => {
+    setIsPaymentModalOpen(false);
+};
+const handlePay = async () => {
+ 
+      // try {
+      //     const updatedAppointment = {
+      //         ...appointment,
+      //         status: 'Paid'
+      //     };
+      //     await appointmentService.updateAppointmentStatus(appointment._id, 'Paid');
+      //     setAppointment(updatedAppointment);
+      //     closePaymentModal();
+      //     toast.success('Chờ xác nhận');
+          
+      // } catch (error) {
+      //     console.error('Error updating appointment:', error.message);
+      // }
   
+};
 
   return (
     <div className={styles.container}>
@@ -322,7 +363,7 @@ const handleConfirmAppointment = async (e) => {
               <Button type="button" name="Hủy" color='#FF6347' onClick={closeModal} />
             </div>
             <div>
-              <Button type="button" name="Xác nhận" color='#37A4F3' onClick={handleConfirmAppointment}/>
+              <Button type="button" name="Xác nhận" color='#37A4F3' onClick={(e)  => openPaymentModal(e) }/>
             </div>
           </div>
         </form>
@@ -371,6 +412,20 @@ const handleConfirmAppointment = async (e) => {
           )}
         </Modal>
       )}
+      <Modal
+                    isOpen={isPaymentModalOpen}
+                    onRequestClose={closePaymentModal}
+                    contentLabel="Payment Modal"
+                    className={styles.modal+' '+styles.backgroundGreen}
+                    overlayClassName={styles.overlay}
+                >
+                    <h2 style={{color:'white'}}>Thanh toán</h2>
+                    <div className='d-flex center'><img src={payment} style={{maxHeight: '20em'}}/></div>
+                    <div style={{display:'flex',flexDirection:'row',float:'right',gap:'1em'}}>
+                        <div style={{minWidth:'6em'}}><Button onClick={closePaymentModal} name={'Đóng'} color='red'/></div>
+                        <div style={{minWidth:'6em'}}><Button onClick={(e) => handleConfirmAppointment(e)} name={'Xác nhận'} /></div>
+                    </div>
+     </Modal>
     </div>
   );
 }
