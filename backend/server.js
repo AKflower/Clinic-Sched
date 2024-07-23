@@ -30,8 +30,8 @@ app.use(cors());
 app.use(express.json());
 
 // Kết nối tới MongoDB Atlas hoặc local MongoDB
-const mongoURI = 'mongodb+srv://tranquocdungb4:HwnRECAExdn4vLfk@cluster0.jl2mgf9.mongodb.net/Clinic?appName=Cluster0';
-
+// const mongoURI = 'mongodb+srv://tranquocdungb4:HwnRECAExdn4vLfk@cluster0.jl2mgf9.mongodb.net/Clinic?appName=Cluster0';
+const mongoURI = 'mongodb+srv://ngocdtb502:bbuGHbUUBpVkN0Zr@utehealth.etylhol.mongodb.net/UTE-Health?appName=UTEHealth'
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -50,6 +50,7 @@ const departmentRoutes = require('./routes/departments');
 const fileRoutes = require('./routes/files');
 const timeSlotRoutes = require('./routes/timeSlots');
 const roomRoutes = require('./routes/rooms');
+const reviewRoutes = require('./routes/review')
 
 
 app.use('/api/auth', authRoutes);
@@ -61,6 +62,7 @@ app.use('/api/departments', departmentRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/timeSlots', timeSlotRoutes);
 app.use('/api/rooms', roomRoutes);
+app.use('/api/reviews',reviewRoutes)
 
 // Serve static files
 app.use('/assets', express.static(path.join(__dirname, 'assets')));

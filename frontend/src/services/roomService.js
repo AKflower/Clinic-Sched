@@ -52,7 +52,11 @@ const roomService = {
     } catch (error) {
       throw new Error(error.response?.data?.message || error.message);
     }
-  }
+  },
+  updateRoomStatus: async (roomId, status) => {
+    const response = await axiosInstance.put(`/rooms/${roomId}/status`, { status });
+    return response.data;
+  },
 };
 
 export default roomService;

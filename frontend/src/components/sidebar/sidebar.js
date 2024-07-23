@@ -17,7 +17,7 @@ export default function Sidebar () {
     console.log(path);  
     
     return (
-        <div className={!(role=='admin') ? styles.container: styles.containerAdmin} style={{display:path.includes('/login') || path.includes('/register') || path.includes('/forgot') || path.includes('/room')  ? 'none' : 'block'}}>
+        <div className={!(role=='admin') ? styles.container: styles.containerAdmin} style={{display:path.includes('/login') || path.includes('/register') || path.includes('/forgot') || path.includes('/room') || path.includes('/rating') || path =='/'  ? 'none' : 'block'}}>
             <div style={{margin: '0 0 0 2em'}}><Brand size={1} /></div>
             
             <Link to='/home'>
@@ -30,7 +30,7 @@ export default function Sidebar () {
                     <AssignmentIndOutlinedIcon /><span>Hồ sơ</span>
                 </div>
             </Link>}
-           {(role == 'user' || role=='doctor') && <Link to='/appointment'>
+           {(role == 'user' || role=='doctor') && <Link to='/appointmentOverall'>
                 <div className={styles.item} style={path.includes('/appointment') ? {backgroundColor: '#17BB4F',color:'white'} : {}}>
                     <CalendarMonthOutlinedIcon /><span>Lịch khám</span>
                 </div>
@@ -50,12 +50,12 @@ export default function Sidebar () {
          {role == 'admin' &&   <>
             <Link to='/manage_appointment'>
                 <div className={styles.item} style={path.includes('/manage_appointment') ? {backgroundColor: '#17BB4F',color:'white'} : {}}>
-                <CalendarMonthOutlinedIcon /><span>Quản lý lịch khám</span>
+                <CalendarMonthOutlinedIcon /><span>Quản lý lịch hẹn</span>
                 </div>
             </Link>
             <Link to='/manage_user'>
                 <div className={styles.item} style={path.includes('/manage_user') ? {backgroundColor: '#17BB4F',color:'white'} : {}}>
-                <PersonOutlineIcon /><span>Quản lý người dùng</span>
+                <PersonOutlineIcon /><span>Quản lý khách hàng</span>
                 </div>
             </Link>
             <Link to='/manage_doctor'>

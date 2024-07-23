@@ -2,46 +2,53 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
-const CalendarComponent = ({ onChange, disabledDates }) => {
+const CalendarComponent = ({ onChange, disabledDates, appointmentDates, onDateClick }) => {
   const [date, setDate] = useState(new Date());
-  console.log('Test: ',disabledDates);
+  console.log('Test: ', disabledDates, appointmentDates);
+
   const handleChange = (newDate) => {
-    setDate(newDate);
-    onChange(newDate);
+    const dateString = newDate.toISOString().split('T')[0];
+    if (isDateMarked(newDate)) {
+      onDateClick(dateString);
+    } else {
+      setDate(newDate);
+      onChange(newDate);
+    }
   };
-    // Function to determine if a week should be disabled
-    // const isWeekDisabled = ({ date }) => {
-    //   const weekStart = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
-    //   const weekEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate() + (6 - date.getDay()));
-  
-    //   return disabledWeeks.some(disabledWeek => {
-    //     const disabledWeekStart = new Date(disabledWeek.getFullYear(), disabledWeek.getMonth(), disabledWeek.getDate() - disabledWeek.getDay());
-    //     const disabledWeekEnd = new Date(disabledWeek.getFullYear(), disabledWeek.getMonth(), disabledWeek.getDate() + (6 - disabledWeek.getDay()));
-    //     return weekStart.getTime() === disabledWeekStart.getTime() && weekEnd.getTime() === disabledWeekEnd.getTime();
-    //   });
-    // };
-  // Function to determine if a date should be disabled
-  const isDateDisabled = ({ date, view }) => {
+
+  // Function to determine if a date should be marked as disabled
+  const isDateMarked = (date) => {
+    const dateString = date.toISOString().split('T')[0];
+    return disabledDates && disabledDates.includes(dateString);
+  };
+
+  // Function to determine if a date has an appointment
+  const isDateWithAppointment = (date) => {
+    // console.log('check: ',appointmentDates)
+    const dateString = date.toISOString().split('T')[0];
+    return appointmentDates && appointmentDates.includes(dateString);
+  };
+
+  // Function to add custom content to the tiles
+  const tileClassName = ({ date, view }) => {
     if (view === 'month') {
-      const day = date.getDay();
-      // Disable weekends
-    
-      // Check if date is in the list of disabled dates
-      const dateString = date.toISOString().split('T')[0];
-      if (disabledDates && disabledDates.includes(dateString)) {
-        return true;
+      if (isDateMarked(date)) {
+        return 'date-off';
+      }
+      if (isDateWithAppointment(date)) {
+        return 'date-appointment';
       }
     }
-    return false;
+    return null;
   };
 
   return (
     <div>
-      <h3 className='d-flex center'>Chọn ngày</h3>
+      <h3 className="d-flex center">Chọn ngày</h3>
       <Calendar
         onChange={handleChange}
         value={date}
-        tileDisabled={isDateDisabled}
+        tileClassName={tileClassName}
       />
     </div>
   );

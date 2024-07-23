@@ -52,3 +52,13 @@ exports.getDepartmentById = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.updateDepartmentIsActive = async (req, res) => {
+  const { isActive } = req.body;
+
+  try {
+    const updatedDepartment = await Department.findByIdAndUpdate(req.params.id, { isActive }, { new: true });
+    res.status(200).json(updatedDepartment);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};

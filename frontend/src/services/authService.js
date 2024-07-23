@@ -25,10 +25,11 @@ const login = async (phone, password) => {
 };
 
 // Change password
-const changePassword = async (token, currentPassword, newPassword) => {
+const changePassword = async (token, phone, currentPassword, newPassword) => {
   const response = await axios.post(
     `${API_URL}/change-password`,
     {
+      phone,
       currentPassword,
       newPassword
     },

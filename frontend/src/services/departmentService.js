@@ -61,6 +61,14 @@ const departmentService = {
     } catch (error) {
       throw new Error(error.response?.data?.message || error.message);
     }
+  },
+  updateDepartmentIsActive: async (id, isActive) => {
+    try {
+      const response = await axiosInstance.put(`/departments/${id}/active`, { isActive });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
   }
 };
 

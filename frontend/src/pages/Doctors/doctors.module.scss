@@ -1,6 +1,12 @@
 .container{
     padding-bottom: 2em;
-
+    .header{
+        width: 90%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
     .doctorsContainer{
         width: 90%;
         display: grid;

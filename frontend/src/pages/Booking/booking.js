@@ -70,6 +70,7 @@ export default function Booking() {
     const fetchFiles = async () => {
         try {
           const data = await fileService.getFilesByUserId(userId);
+          data = data.filter((item) => item.result=='')
           data.sort((a,b) => b.fileid-a.fileid);
           setFiles(data);
         } catch (error) {
@@ -156,15 +157,16 @@ const getISOWeekNumber = (date) => {
   return weekNo;
 };
 
-const isCurrentWeek = (date) => {
+const isCurrentOrNextWeek = (date) => {
   const currentWeekNumber = getISOWeekNumber(new Date());
+  const nextWeekNumber = currentWeekNumber + 1;
   const weekNumber = getISOWeekNumber(date);
-  return currentWeekNumber === weekNumber;
+  return weekNumber === currentWeekNumber || weekNumber === nextWeekNumber;
 };
 
   const handleDateChange = (date) => {
     
-    if (!isCurrentWeek(date)) {
+    if (!isCurrentOrNextWeek(date)) {
       toast.error('Chỉ có thể đặt lịch trong tuần!');
       return;
     }

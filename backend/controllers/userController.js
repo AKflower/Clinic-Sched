@@ -33,8 +33,8 @@ exports.addUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-  const { name, phone, email, birth } = req.body;
-  const updateData = { name, phone, email, birth };
+  const { name, phone, email, birthdate } = req.body;
+  const updateData = { name, phone, email, birthdate };
 
 
   try {

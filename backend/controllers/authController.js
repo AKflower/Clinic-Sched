@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid phone or password.' });
     }
 
-    const token = jwt.sign({ _id: user._id, role: user.role }, 'dung0804');
+    const token = jwt.sign({ _id: user._id, role: user.role }, 'ngoc3105');
     res.json({ token, id: user._id, name: user.name, role: user.role });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
-  const { currentPassword, newPassword } = req.body;
+  const { phone, currentPassword, newPassword } = req.body;
 
   try {
     let user = await User.findOne({ phone });

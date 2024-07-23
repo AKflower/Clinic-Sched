@@ -4,6 +4,7 @@ const departmentController = require('../controllers/departmentController');
 const { authenticateToken, authorizeRole } = require('../middleware/auth');
 
 // Thêm, sửa, xóa Department
+router.put('/:id/active', departmentController.updateDepartmentIsActive);
 
 router.post('/', authenticateToken, authorizeRole(['admin']), departmentController.addDepartment);
 router.get('/:id', authenticateToken, authorizeRole(['admin', 'doctor', 'user']), departmentController.getDepartmentById);

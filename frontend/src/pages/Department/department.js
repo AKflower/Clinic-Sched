@@ -31,7 +31,7 @@ export default function Department () {
     e.preventDefault();
     try {
       if (departmentSelected._id) {
-        await departmentService.updateDepartment(departmentSelected._id, departmentSelected);
+        await departmentService.updateDepartment(departmentSelected._id, departmentSelected.name,departmentSelected.description);
       } else {
         await departmentService.addDepartment(departmentSelected.name,departmentSelected.description);
       }
@@ -79,10 +79,10 @@ export default function Department () {
       setDepartments(filteredDepartments);
     }
   };
-  const  handleUpdateActive = (id, isActive, e)  => {
+  const  handleUpdateActive = async (id, isActive, e)  => {
     e.stopPropagation();
     try {
-      // await departmentService.updateActiveDepartment(id, isActive);
+      await departmentService.updateDepartmentIsActive(id, isActive);
       fetchDepartments(); 
     } catch (error) {
       console.error('Error updating department status:', error);

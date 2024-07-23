@@ -41,6 +41,15 @@
                 div{
                     margin-top: .5em;
                 }
+                .review{
+                    position: absolute;
+                    top:0;
+                    right: 10px;
+                    color: yellow;
+                    background-color: rgb(233, 63, 37);
+                    padding: .2em .5em;
+                    border-radius: 5em;
+                }
             }
         }
         
@@ -72,4 +81,11 @@
   }
   .backgroundGreen{
     background-color: #89c39d !important;
+  }
+  .feedback{
+    font-weight: 700;
+    span{
+        font-weight: 400;
+        font-style: italic;
+    }
   }

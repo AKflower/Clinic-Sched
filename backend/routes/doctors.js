@@ -3,6 +3,8 @@ const router = express.Router();
 const doctorController = require('../controllers/doctorController');
 const { authenticateToken, authorizeRole } = require('../middleware/auth');
 
+router.delete('/doctor/:id/dayOff', doctorController.deleteDayOff);
+
 router.get('/department/:departmentId/availability', authenticateToken, authorizeRole(['admin', 'user']), doctorController.getDoctorsWithAvailability);
 router.get('/', authenticateToken, doctorController.getAllDoctors);
 router.get('/:id', authenticateToken,authorizeRole(["admin","doctor","user"]), doctorController.getDoctorById);
@@ -16,6 +18,5 @@ router.put('/forgot/:id', authenticateToken, authorizeRole(['user']), doctorCont
 router.put('/reset/:id', authenticateToken, authorizeRole(['admin']), doctorController.resetPassword);
 router.put('/changePass/:id', authenticateToken, authorizeRole(['admin']), doctorController.updatePassword);
 router.get('/wdbm/:id', authenticateToken, authorizeRole(['admin','doctor']), doctorController.getWorkingDaysByMonth);
-
 
 module.exports = router;

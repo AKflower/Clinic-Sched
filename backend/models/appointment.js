@@ -10,7 +10,11 @@ const appointmentSchema = new Schema({
   date: { type: Date, required: true },
   timeId: { type: Number, ref: 'TimeSlot', required: true },
   status: { type: String, enum: ['Wait for payment', 'Paid', 'Confirmed', 'Complete', 'Overdue'], default: 'Wait for payment', required: true },
-  note: { type: String }
+  note: { type: String },
+  userAttend: {type:Boolean, default:false}
 });
 
-module.exports = mongoose.model('Appointment', appointmentSchema);
+// Sử dụng kiểm tra trước khi định nghĩa model
+const Appointment = mongoose.models.Appointment || mongoose.model('Appointment', appointmentSchema);
+
+module.exports = Appointment;

@@ -36,6 +36,7 @@ const UserService = {
     },
   
     getUserById: async (id) => {
+      console.log('test');
       try {
         const response = await axiosInstance.get(`/${id}`);
         return response.data;

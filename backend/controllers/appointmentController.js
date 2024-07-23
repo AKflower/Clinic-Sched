@@ -1,11 +1,18 @@
-const Appointment = require('../models/Appointment');
+const Appointment = require('../models/appointment');
 const User = require('../models/user');
 const Doctor = require('../models/doctor');
 const mongoose = require('mongoose');
+const Review = require('../models/review'); // Import model Review
+
 
 exports.getAllAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find().populate('fileId').populate('userId').populate('doctorId').populate('departmentId');;
+    let appointments = await Appointment.find().populate('fileId').populate('userId').populate('doctorId').populate('departmentId');
+    // Thêm trường isReviewed
+    appointments = await Promise.all(appointments.map(async (appointment) => {
+      const review = await Review.findOne({ appointmentId: appointment._id });
+      return { ...appointment._doc, isReviewed: !!review };
+    }));
     res.status(200).json(appointments);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -14,8 +21,46 @@ exports.getAllAppointments = async (req, res) => {
 
 exports.getAppointmentById = async (req, res) => {
   try {
-    const appointment = await Appointment.findById(req.params.id);
-    res.status(200).json(appointment);
+    const appointment = await Appointment.findById(req.params.id).populate('fileId');
+    const review = await Review.findOne({ appointmentId: appointment._id });
+    const appointmentWithReview = { ...appointment._doc, isReviewed: !!review };
+    res.status(200).json(appointmentWithReview);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+exports.getAppointmentsByDoctorId = async (req, res) => {
+  try {
+    const doctorId = req.params.doctorId;
+    const appointments = await Appointment.find({ doctorId }).populate('fileId');
+
+    res.status(200).json(appointments);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+exports.getAppointmentDatesByDoctorId = async (req, res) => {
+  try {
+    const doctorId = req.params.doctorId;
+    const appointments = await Appointment.find({ doctorId }, 'date'); // Lấy chỉ trường 'date'
+
+    // Trích xuất các ngày và loại bỏ trùng lặp
+    const appointmentDates = [...new Set(appointments.map(app => app.date.toISOString().split('T')[0]))];
+
+    res.status(200).json(appointmentDates);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+exports.getAppointmentDatesByUserId = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const appointments = await Appointment.find({ userId }, 'date'); // Lấy chỉ trường 'date'
+
+    // Trích xuất các ngày và loại bỏ trùng lặp
+    const appointmentDates = [...new Set(appointments.map(app => app.date.toISOString().split('T')[0]))];
+
+    res.status(200).json(appointmentDates);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -57,7 +102,18 @@ exports.updateAppointment = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+exports.updateAppointmentUserAttend = async (req, res) => {
+  const { userAttend } = req.body;
 
+  try {
+    const updatedAppointment = await Appointment.findByIdAndUpdate(req.params.id, {
+     userAttend
+    }, { new: true });
+    res.status(200).json(updatedAppointment);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
 exports.deleteAppointment = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id);
@@ -98,14 +154,14 @@ exports.getDoctorAppointmentsTimeByDate = async (req, res) => {
 };
 
 exports.getDoctorAppointmentsByDate = async (req, res) => {
-  
   const { doctorId } = req.params;
   const { date } = req.query;
-  console.log(doctorId,date);
   try {
-    // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
-    const appointments = await Appointment.find({ doctorId, date }).populate('fileId').populate('userId').populate('doctorId').populate('departmentId');
-
+    let appointments = await Appointment.find({ doctorId, date }).populate('fileId').populate('userId').populate('doctorId').populate('departmentId').populate('roomId');
+    appointments = await Promise.all(appointments.map(async (appointment) => {
+      const review = await Review.findOne({ appointmentId: appointment._id });
+      return { ...appointment._doc, isReviewed: !!review };
+    }));
     res.status(200).json(appointments);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -113,13 +169,14 @@ exports.getDoctorAppointmentsByDate = async (req, res) => {
 };
 
 exports.getUserAppointmentsByDate = async (req, res) => {
-  
   const { userId } = req.params;
   const { date } = req.query;
   try {
-    // Tìm tất cả các cuộc hẹn của bác sĩ trong ngày cụ thể
-    const appointments = await Appointment.find({ userId, date }).populate('departmentId').populate('userId').populate('doctorId').populate('fileId');
-    console.log(appointments);
+    let appointments = await Appointment.find({ userId, date }).populate('departmentId').populate('userId').populate('doctorId').populate('fileId').populate('roomId');
+    appointments = await Promise.all(appointments.map(async (appointment) => {
+      const review = await Review.findOne({ appointmentId: appointment._id });
+      return { ...appointment._doc, isReviewed: !!review };
+    }));
     res.status(200).json(appointments);
   } catch (err) {
     res.status(500).json({ message: err.message });

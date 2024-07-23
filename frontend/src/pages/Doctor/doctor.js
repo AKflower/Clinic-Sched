@@ -6,6 +6,7 @@ import Modal from 'react-modal';
 import Input from '../../components/input/input';
 import departmentService from '../../services/departmentService';
 import Select2 from '../../components/select/select2';
+import { toast } from 'react-toastify'
 
 Modal.setAppElement('#root'); // Thiết lập
 
@@ -18,6 +19,7 @@ export default function Doctor () {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [doctorSelected, setDoctorSelected] = useState(null);
   const [newPassword, setNewPassword] = useState('');
+  const [doctorSelectedDepartment,setDoctorSelectedDepartment] = useState(null)
 
   useEffect(() => {
     fetchDoctors();
@@ -32,10 +34,15 @@ export default function Doctor () {
       console.error('Error fetching department:', error.message);
     }
   };
-
+  const renderName = function (departmentId) {
+    if (!department) return;
+    if (departmentId==null) return;
+    return department.find(department => departmentId == department._id).name;
+  }
   const fetchDoctors = async () => {
     try {
       const doctors = await doctorService.getAllDoctors();
+      
       setDoctors(doctors);
       setDoctorsBackup(doctors);
     } catch (error) {
@@ -47,19 +54,23 @@ export default function Doctor () {
     e.preventDefault();
     try {
       if (doctorSelected._id) {
+        doctorSelected.department[0]=doctorSelectedDepartment;
         await doctorService.updateDoctor(doctorSelected._id, { ...doctorSelected });
       } else {
         await doctorService.addDoctor(doctorSelected);
       }
       fetchDoctors();
       closeModal();
+      toast.success('Cập nhật thành công!')
     } catch (error) {
       console.error('Error updating doctor:', error);
     }
   };
 
   const handleSelectDoctor = (doctor) => {
+    setDoctorSelectedDepartment(doctor.department[0])
     setDoctorSelected(doctor);
+
     openModal();
   };
 
@@ -84,7 +95,9 @@ export default function Doctor () {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === 'department') {
-      doctorSelected.department.push(value);
+      setDoctorSelectedDepartment(value)
+      
+      console.log('test',doctorSelected);
       setDoctorSelected(doctorSelected);
       return;
     }
@@ -126,8 +139,9 @@ export default function Doctor () {
     
     e.preventDefault();
     try {
-      await doctorService.updateDoctorPassword(doctorSelected._id, newPassword);
+      await doctorService.updatePassword(doctorSelected._id, newPassword);
       closePasswordModal();
+      toast.success('Đổi mật khẩu thành công!')
     } catch (error) {
       console.error('Error updating password:', error);
     }
@@ -162,7 +176,7 @@ export default function Doctor () {
               <td>{doctor.name}</td>
               <td>{doctor.phone}</td>
               <td>{doctor.email}</td>
-              <td>{doctor.department[0]}</td>
+              <td>{doctor && renderName(doctor.department[0])}</td>
               <td>
                 {doctor.isActive ? (
                   <Button name='Vô hiệu' color='red' onClick={(e) => handleUpdateActive(doctor._id, false, e)} />
@@ -196,7 +210,7 @@ export default function Doctor () {
                 </div>
               </div>
             )}
-            <Select2 label={'Chuyên khoa'} value={doctorSelected.department[0]} name='department' onChange={handleInputChange} options={department} />
+            <Select2 label={'Chuyên khoa'} value={doctorSelectedDepartment} name='department' onChange={handleInputChange} options={department} />
           </form>
           <div className={styles.button}>
             <div>

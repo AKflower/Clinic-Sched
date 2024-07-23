@@ -139,7 +139,7 @@ export default function User () {
                     <tr key={user._id} onClick={() => handleSelectUser(user)}>
                         <td>{user.name}</td>
                         <td>{user.phone}</td>
-                        <td>{user.birthdate}</td>
+                        <td>{formatDateYYYMMDD(user.birthdate)}</td>
                         <td>{user.email}</td>
                         <td>{user.isActive ? <Button name='Vô hiệu' color='red' onClick={(e) => handleUpdateActive(user._id,false,e)}/>:<Button name='Kích hoạt' color='green' onClick={(e) => handleUpdateActive(user._id,true,e)}/>}</td>
                     </tr>
@@ -159,7 +159,7 @@ export default function User () {
             <Input label={'Tên'} name='name' value={userSelected.name} onChange={handleInputChange}/>
             <Input label={'Số điện thoại'} name='phone' value={userSelected.phone} isDisabled={true}/>
             <Input label={'Email'} name='email' value={userSelected.email} onChange={handleInputChange}/>
-            <Input label={'Năm sinh'} value={userSelected.birthdate} type='date' name='birthdate' onChange={handleInputChange}/>
+            <Input label={'Năm sinh'} value={formatDate(userSelected.birthdate)} type='date' name='birthdate' onChange={handleInputChange}/>
             </form>
             <div className={styles.button}>
             <div>
@@ -176,3 +176,17 @@ export default function User () {
     )
 }
 
+function formatDateYYYMMDD(dateInput) {
+  const date = new Date(dateInput)
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+}
+function formatDate(dateInput) {
+  const date = new Date(dateInput)
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
+  const year = date.getFullYear();
+  return `${year}-${month}-${day}`;
+}

@@ -1,14 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { createElement, useEffect, useRef, useState } from 'react';
 import Peer from 'peerjs';
 import io from 'socket.io-client';
-import { useLocation } from 'react-router-dom'
+import { useLocation,useNavigate } from 'react-router-dom'
 import userService from '../../services/userService'
 import doctorService from '../../services/doctorService'
+import { toast } from 'react-toastify'
+import styles from './videoCall.module.scss'
+import Brand from '../brand/brand'
+import MicIcon from '@mui/icons-material/Mic';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import LogoutIcon from '@mui/icons-material/Logout';
 
-const VideoCall = ({ roomId }) => {
-
+const VideoCall = ({ room,oppName,appointment }) => {
   
-  
+  const roomId = room._id;
   const [myStream, setMyStream] = useState(null);
   const [peers, setPeers] = useState({});
   const socketRef = useRef();
@@ -21,9 +26,14 @@ const VideoCall = ({ roomId }) => {
   const id = localStorage.getItem('id');
   
   const otherVideoGridRef = useRef();
- 
-  
+ const navigate = useNavigate()
+
+//  var data=''
+//  if (role=='doctor' )  data =  userService.getUserById(room.userId);
+//  else data =  doctorService.getDoctorById(room.doctorId);
+//  console.log('Data : ',data);
   useEffect(() => {
+
       socketRef.current = io.connect('http://localhost:3001');
 
       navigator.mediaDevices.getUserMedia({ video: true, audio: true })
@@ -31,7 +41,7 @@ const VideoCall = ({ roomId }) => {
               setMyStream(stream);
               myVideoRef.current.srcObject = stream;
             
-              myPeer.current = new Peer(id);
+              myPeer.current = new Peer();
               myPeer.current.on('open', (peerId) => {
                   socketRef.current.emit('join', roomId, peerId);
               });
@@ -48,6 +58,7 @@ const VideoCall = ({ roomId }) => {
                 console.log('test',peers);
                   // Check if the peerId already exists in peers
                   if (!peers[peerId]) {
+                   
                       setOppId(peerId);
                       // if (role=='doctor' )  data = await userService.getUserById(peerId);
                       // else data = await doctorService.getDoctorById(peerId);
@@ -61,6 +72,7 @@ const VideoCall = ({ roomId }) => {
                 console.log('test');
               
                 document.getElementById('video-other').innerHTML='';
+                document.getElementById('video-other').classList.remove('video-box');
                 if (peers[peerId]) {
 
                       peers[peerId].close();
@@ -82,10 +94,10 @@ const VideoCall = ({ roomId }) => {
           socketRef.current.disconnect();
       };
   }, [roomId]);
-  useEffect(() => {
+  // useEffect(() => {
     
-    fetchOpp(oppId)
-  },[oppId]);
+  //   fetchOpp(oppId)
+  // },[oppId]);
 
   const fetchOpp = async (id) => {
     if (id==null) return;
@@ -125,8 +137,9 @@ const VideoCall = ({ roomId }) => {
       }
   };
 
-  const addPeerStream = (peerId, stream) => {
+  const addPeerStream = async (peerId, stream) => {
       // Kiểm tra xem video của peer đã tồn tại trong otherVideoGrid chưa
+      console.log('testfsafa');
       const existingPeerVideo = document.querySelector(`.peer-video[data-peer="${peerId}"]`);
       const existingVideo = document.getElementById('video-other').childElementCount;
       console.log('testTOntai: ',existingPeerVideo);
@@ -138,8 +151,14 @@ const VideoCall = ({ roomId }) => {
           peerVideo.classList.add('peer-video');
           peerVideo.setAttribute('data-peer', peerId); // Đặt thuộc tính để xác định video của peer
           peerVideo.style.transform= 'scaleX(-1)'
-       
+          if (id==null) return;
+         
+     
           otherVideoGridRef.current.appendChild(peerVideo);
+          const pName = document.createElement('p');
+          pName.innerHTML=`${role=='user' ? 'Bác sĩ' : ''} ${oppName}`;
+          pName.classList.add('chat-name')
+          otherVideoGridRef.current.appendChild(pName)
       }
   };
 
@@ -171,17 +190,33 @@ const toggleCamera = () => {
     socketRef.current.emit('toggle-camera', roomId, !isCameraOn);
   }
 };
+const handleLeave = () =>{
+  if (appointment.isReviewed) navigate('/home');
+  else navigate(`/rating?id=${appointment._id}`);
+}
   return (
-      <div className="video-call d-flex center">
+    <div >
+    <header className={styles.header}>
+    <div className={styles.brand}><Brand size={1}/></div>
+    <div className={styles.tool}>
+      <div><MicIcon /></div>
+      <div><CameraAltIcon /></div>
+      <div onClick={() => handleLeave()}><LogoutIcon /></div>
+    </div>
+    </header>
+      <div className="video-call d-flex center" style={{margin:'1em'}}>
+         
           <div className="my-video video-box">
               <video ref={myVideoRef} muted autoPlay playsInline style={{transform: 'scaleX(-1)'}}/>
+              <p className='chat-name'>Bạn</p>
           </div>
           <div ref={otherVideoGridRef} className="other-video-grid" id="video-other">
              {/* Các video stream của các peers khác */}
           </div>
-          <div>{nameOpp}</div>
+        
         
       </div>
+    </div>
   );
 };
 

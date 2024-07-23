@@ -108,7 +108,7 @@ export default function File () {
             </div>
             <div className={styles.fileContainer}>
                 {files.map((file) => (
-                    <CardFile id={file.fileid} name={file.name} symptom={file.symptom} description={file.description} birthdate={file.birthDate} createdDate={file.createdDate} gender={file.gender}/>
+                    <CardFile id={file.fileid} name={file.name} symptom={file.symptom} description={file.description} birthdate={file.birthDate} createdDate={file.createdDate} gender={file.gender} result={file.result}/>
                 ))
                     }
 

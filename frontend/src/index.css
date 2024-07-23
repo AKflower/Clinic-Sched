@@ -40,8 +40,21 @@ a {
   transform: scaleX(-1); 
 }
 .video-box {
-  padding: 1em;
-  box-shadow: 1px 2px 3px silver;
-  background: #fffefe;
-  border-radius: 10px;
+      padding: 1em;
+    box-shadow: 1px 2px 3px silver;
+    background: #fffefe;
+    border-radius: 10px;
+}
+.chat-name{
+  font-weight: 600;
+  text-align: center;
+}
+.date-off {
+  background-color: #e62626 !important; /* Light red background */
+  color: #fff; /* Red text color */
+  border-radius: 5px; /* Optional: Add border-radius for rounded corners */
+}
+.date-appointment {
+  background-color: rgb(46, 134, 37) !important;
+  color: white !important;
 }

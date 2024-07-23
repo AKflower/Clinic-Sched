@@ -6,6 +6,7 @@ import Input from '../../components/input/input';
 import Modal from 'react-modal';
 import DoneIcon from '@mui/icons-material/Done';
 import roomService from '../../services/roomService'
+
 import { toast } from 'react-toastify'
 
 Modal.setAppElement('#root'); // Thiết lập phần tử gốc của ứng dụng
@@ -19,11 +20,34 @@ export default function AppointmentManage() {
   useEffect(() => {
     fetchAppointments();
   }, []);
-
+  const timeSlotsData = [
+    { id: 1, name: '8:00', time: '08:00' },
+    { id: 2, name: '8:30', time: '08:30' },
+    { id: 3, name: '9:00', time: '09:00' },
+    { id: 4, name: '9:30', time: '09:30' },
+    { id: 5, name: '10:00', time: '10:00' },
+    { id: 6, name: '10:30', time: '10:30' },
+    { id: 7, name: '11:00', time: '11:00' },
+    { id: 8, name: '11:30', time: '11:30' },
+    { id: 9, name: '13:00', time: '13:00' },
+    { id: 10, name: '13:30', time: '13:30' },
+    { id: 11, name: '14:00', time: '14:00' },
+    { id: 12, name: '14:30', time: '14:30' },
+    { id: 13, name: '15:00', time: '15:00' },
+    { id: 14, name: '15:30', time: '15:30' },
+    { id: 15, name: '16:00', time: '16:00' },
+    { id: 16, name: '16:30', time: '16:30' },
+  ];
+  
   const fetchAppointments = async () => {
     try {
       const appointments = await appointmentService.getAllAppointments();
+      appointments.forEach((appointment) => {
+        var temp = timeSlotsData.find((item) => { return item.id == appointment.timeId});
+        appointment.time=temp.time;
+      })
       const sortedArray = appointments.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
       setAppointments(sortedArray);
       setAppointmentsBackup(sortedArray);
     } catch (error) {
@@ -84,8 +108,8 @@ export default function AppointmentManage() {
     e.stopPropagation()
     try {
       const roomData = {
-        userId : appointment.userId,
-        doctorId: appointment.doctorId,
+        userId : appointment.userId._id,
+        doctorId: appointment.doctorId._id,
         appointmentId: appointment._id,
         startDateTime: appointment.date,
         endDateTime: appointment.date,
@@ -128,7 +152,7 @@ export default function AppointmentManage() {
         <tbody>
           {appointments.map((appointment) => (
             <tr key={appointment._id} onClick={() => handleSelectAppointment(appointment)}>
-              <td>{formatDate(appointment.date)}</td>
+              <td>{appointment.time}, {formatDate(appointment.date)}</td>
               <td>{appointment.userId.name}</td>
               <td>{appointment.doctorId.name}</td>
               <td>{appointment?.departmentId?.name || ''}</td>

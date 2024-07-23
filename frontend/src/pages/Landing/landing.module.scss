@@ -1,0 +1,43 @@
+.container{
+    .header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: aliceblue;
+        position: fixed;
+        top:0;
+        width: 100%;
+        z-index: 1000;
+       
+    }
+    .cover{
+        position: relative;
+        .content{
+            position: absolute;
+            top:40%;
+            max-width: 30em;
+            left: 5em;
+        }
+    }
+    .about{
+        position: relative;
+        .content{
+            position: absolute;
+            top: 30%;
+            max-width: 50em;
+            /* left: 5em; */
+            right: 10em;
+        }
+    }
+    .doctors{
+        background-color: #79B4BE;
+        padding: 2em 0;
+        .doctorsContainer{
+            width: 80%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 cột có kích thước bằng nhau */
+            gap: 2em; /* Khoảng cách giữa các cột */
+        }
+    }
+}

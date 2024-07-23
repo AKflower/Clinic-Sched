@@ -105,6 +105,34 @@ const appointmentService = {
       console.error('Error updating appointment status:', error.message);
       throw error;
     }
+  },
+  updateAppointmentUserAttend: async (id,userAttend) => {
+    try {
+      const response = await axiosInstance.patch(`/appointments/userAttend/${id}`,{userAttend});
+      return response.data;
+
+    }catch (error) {
+      console.error('Error updating appointment user attend:', error.message);
+      throw error;
+    }
+  },
+  getAppointmentDatesByDoctorId : async (doctorId) => {
+    try {
+      const response = await axiosInstance.get(`/appointments/dates/doctor/${doctorId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching appointment dates: ", error);
+      throw error;
+    }
+  },
+  getAppointmentDatesByUserId : async (userId) => {
+    try {
+      const response = await axiosInstance.get(`/appointments/dates/user/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching appointment dates: ", error);
+      throw error;
+    }
   }
 }
 

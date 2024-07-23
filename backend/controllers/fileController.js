@@ -24,6 +24,7 @@ exports.updateFile = async (req, res) => {
   }
 };
 
+
 exports.deleteFile = async (req, res) => {
   try {
     await File.findByIdAndDelete(req.params.id);

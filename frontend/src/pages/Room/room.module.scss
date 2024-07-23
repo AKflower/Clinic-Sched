@@ -1,12 +1,8 @@
 .container {
-    .header{
-        background-color: aquamarine;
-        position: relative;
-        display: flex;
-        min-height: 4em;
-        .brand{
-            position: absolute;
-            right: 45%;
-        }
-    }
+   .toolDoctor{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:1em;
+   }
 }

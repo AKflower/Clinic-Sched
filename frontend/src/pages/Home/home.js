@@ -24,6 +24,7 @@ export default function Home () {
     const [appointments,setAppointments] = useState([])
     const [files, setFiles] = useState([]);
     const [workingDaysCount, setWorkingDaysCount] = useState(0);
+    const [revenue,setRevenue] = useState(0)
 
 
 
@@ -100,7 +101,11 @@ export default function Home () {
     const fetchAppointments = async () => {
         try {
         const appointments = await appointmentService.getAllAppointments();
-        
+        var count = 0;
+        appointments.forEach((appointment) => {
+          if (appointment.status == 'Complete') count++;
+        })
+        setRevenue(count);
         setAppointments(appointments);
         } catch (error) {
         console.error('Error fetching appointments:', error);
@@ -126,9 +131,9 @@ export default function Home () {
         <div className={styles.container}>
             <h1>Đặt khám</h1>
             <div className={styles.departmentContainer}>
-            {departments.map((department,index) => (
+            {departments.map((department,index) => ( department.isActive &&
                 <Card key={department._id} name={department.name} id={department._id} index={index} description={department.description}/>
-            ))}
+    ))}
               
                 
             </div>
@@ -154,10 +159,17 @@ export default function Home () {
             <CardDashBoard data={{quant:users.length,text:'Người dùng'}} goto={'manage_user'}/>
             <CardDashBoard data={{quant:doctors.length,text:'Bác sĩ'}} goto={'manage_doctor'}/>
             <CardDashBoard data={{quant:files.length,text:'Hồ sơ bệnh án'}} goto={'manage_file'}/>
+            <CardDashBoard data={{quant:convertNumbers(revenue*100000),text:'Tổng doanh thu'}} goto={'manage_appointment'}/>
          
         </div>
         <AppointmentChart appointments={appointments}/>
         
     </div>
     )
+}
+function convertNumbers(num) {
+  if (num>=10000) num=num/1000 + 'K';
+  else if (num>=1000000) num=num/1000000 + 'M';
+  else if (num>=1000000000) num = num / 1000000000 + 'B'
+  return num;
 }

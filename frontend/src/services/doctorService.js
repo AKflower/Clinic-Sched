@@ -122,6 +122,29 @@ const doctorService = {
       throw error;
     }
   },
+  updatePassword: async (id, password) => {
+    try {
+      const response = await axiosInstance.put(`/doctors/changePass/${id}`, { password });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+  },
+  deleteDayOff: async (doctorId, date) => {
+    try {
+      // Cộng thêm 1 ngày vào ngày cần xóa
+      const newDate = new Date(date);
+      newDate.setDate(newDate.getDate() + 1);
+
+      // Định dạng lại ngày sau khi cộng thêm 1 ngày
+      const formattedDate = newDate.toISOString().split('T')[0];
+
+      const response = await axiosInstance.delete(`/doctors/doctor/${doctorId}/dayOff`, { data: { date: formattedDate } });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default doctorService;

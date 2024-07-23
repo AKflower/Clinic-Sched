@@ -78,3 +78,23 @@ exports.deleteRoom = async (req, res) => {
     res.status(500).json({ message: 'Server error.' });
   }
 };
+exports.updateRoomStatus = async (req, res) => {
+  const { status } = req.body;
+
+  try {
+    const room = await Room.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!room) {
+      return res.status(404).json({ message: 'Room not found.' });
+    }
+
+    res.status(200).json(room);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};

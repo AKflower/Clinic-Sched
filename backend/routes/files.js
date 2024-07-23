@@ -4,7 +4,7 @@ const fileController = require('../controllers/fileController');
 const { authenticateToken, authorizeRole } = require('../middleware/auth');
 
 // Thêm, sửa, xóa File
-router.post('/', authenticateToken, authorizeRole(['admin','user']), fileController.addFile);
+router.post('/', authenticateToken, authorizeRole(['admin','user','doctor']), fileController.addFile);
 router.put('/:id', authenticateToken, authorizeRole(['admin', 'doctor']), fileController.updateFile);
 router.delete('/:id', authenticateToken, authorizeRole(['admin', 'doctor']), fileController.deleteFile);
 router.get('/', authenticateToken, fileController.getAllFiles);

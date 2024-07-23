@@ -1,6 +1,6 @@
 import styles from './cardFile.module.scss';
 
-export default function CardFile ({name,gender,id,symptom,description,birthdate,createdDate}) {
+export default function CardFile ({name,gender,id,symptom,description,birthdate,createdDate,result}) {
     return (
         <div className={styles.container}>
             <h4>{name}</h4>
@@ -21,6 +21,10 @@ export default function CardFile ({name,gender,id,symptom,description,birthdate,
                 <div>Ngày tạo:</div>
                 <div>{formatDate(createdDate)}</div>
             </div>
+            {result && <div className={styles.field}>
+                <div>Kết quả:</div>
+                <div>{result}</div>
+            </div>}
             
         </div>
     )

@@ -1,0 +1,15 @@
+.starComponent{
+    display: flex;
+    justify-content: center;
+    
+}
+.button{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap:1em;
+    margin: 1em 0 0 0 ;
+    div{
+        min-width: 7em;
+    }
+}

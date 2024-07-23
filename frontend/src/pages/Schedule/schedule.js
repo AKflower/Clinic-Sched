@@ -22,6 +22,7 @@ export default function Schedule() {
     const [isDayOffModalOpen, setIsDayOffModalOpen] = useState(false);
 const [dayOffReason, setDayOffReason] = useState('');
 const [doctorSelected, setDoctorSelected] = useState(null);
+const [reasons,setReasons] = useState([])
     const useQuery = () => {
         return new URLSearchParams(location.search);
     };
@@ -40,6 +41,9 @@ const [doctorSelected, setDoctorSelected] = useState(null);
         try {
             const data = await doctorService.getDoctorById(doctorId);
             const doctorDayOffDates = data.dayOff.map(dayOff => new Date(dayOff.date).toISOString().split('T')[0]);
+            const reasons = data.dayOff.map(dayOff => dayOff.reason)
+            console.log(reasons);
+            setReasons(reasons)
             // const shiftedDayOffDates = shiftDatesBackward(doctorDayOffDates.map(day => day.date));
             const shiftedDates = doctorDayOffDates.map(date => {
                 const currentDate = new Date(date);
@@ -60,6 +64,8 @@ const [doctorSelected, setDoctorSelected] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [nestedModalContent, setNestedModalContent] = useState(null); // null, 'create', 'select'
     const [doctor,setDoctor] = useState(null)
+    const [isMarkedDateModalOpen, setIsMarkedDateModalOpen] = useState(false);
+    const [markedDate, setMarkedDate] = useState(null);
 
     const [files, setFiles] = useState([]);
     const [file,setFile] = useState()
@@ -113,7 +119,16 @@ const [doctorSelected, setDoctorSelected] = useState(null);
   const handleDateChange = (date) => {
     
     console.log(date);
+    const dateCompare = new Date(date);
+    
+    const today= new Date()
+    today.setHours(0,0,0)
+    if (dateCompare< today) {
+      toast.warning('Chỉ có thể chọn ngày nghỉ trong tương lai!')
+      return;
+    }
     setSelectedDateCheck(date);
+
     // Đảm bảo rằng ngày được định dạng chính xác theo "YYYY-MM-DD"
     const dateInput = new Date(date);
   
@@ -209,7 +224,18 @@ const handleConfirmAppointment = async (e) => {
  
  
 
-  
+  const handleDeleteDayOff = async (date) => {
+    try {
+      await doctorService.deleteDayOff(doctorId, date);
+
+      fetchDoctor(); // Cập nhật lại danh sách bác sĩ sau khi xóa ngày nghỉ
+      toast.success('Ngày nghỉ đã được xóa thành công.');
+      closeMarkedDateModal()
+    } catch (error) {
+      console.error('Error deleting day off:', error);
+      toast.error('Có lỗi xảy ra khi xóa ngày nghỉ.');
+    }
+  };
   const handleDayOffReasonChange = (e) => {
     setDayOffReason(e.target.value);
   };
@@ -222,17 +248,30 @@ const handleConfirmAppointment = async (e) => {
       console.error('Error confirming day off:', error);
     }
   };
+  const [reason,setReason] = useState(null)
+  const handleMarkedDateClick = (date) => {
+    console.log(date);
+    const currentDate = new Date(date);
+    currentDate.setDate(currentDate.getDate() ); // Lùi lại 1 ngày
+    console.log(currentDate);
+    var index = doctorDayOffDates.indexOf( currentDate.toISOString().split('T')[0])
+    console.log(index);
+    setReason(reasons[index]);
+    setMarkedDate(date);
   
+    setIsMarkedDateModalOpen(true);
+  };
+  const closeMarkedDateModal = () => {
+    setIsMarkedDateModalOpen(false);
+  };
   
   return (
     <div className={styles.container}>
       <h1>Lịch làm việc</h1>
 
       <div className='d-flex center'>
-      <CalendarComponent
-      onChange={handleDateChange}
-      disabledDates={doctorDayOffDates}
-    />
+      <CalendarComponent onChange={handleDateChange} disabledDates={doctorDayOffDates} onDateClick={handleMarkedDateClick} />
+
       </div>
       <Modal
       isOpen={isDayOffModalOpen}
@@ -241,6 +280,7 @@ const handleConfirmAppointment = async (e) => {
       className={styles.modal}
       overlayClassName={styles.overlay}
     >
+      
       <h2>Đăng ký ngày nghỉ</h2>
       <Input label={'Lý do'} isTextArea={true} onChange={handleDayOffReasonChange} />
       <div className={styles.button}>
@@ -252,6 +292,30 @@ const handleConfirmAppointment = async (e) => {
         </div>
       </div>
     </Modal>
+    <Modal
+    isOpen={isMarkedDateModalOpen}
+    onRequestClose={closeMarkedDateModal}
+    contentLabel="Thông tin ngày đã đăng ký nghỉ"
+    className={styles.modal}
+    overlayClassName={styles.overlay}
+  >
+    <h2>Lý do nghỉ</h2>
+   
+    <p>{reason}</p>
+    <div className={styles.button}>
+    
+    <div>
+      <Button  name="Đóng" color="#37A4F3" onClick={closeMarkedDateModal} />
+    </div>
+    <div>
+    <Button name={'Hủy đăng ký'} color='red' onClick={() => handleDeleteDayOff(markedDate)}/>
+    </div>
+  </div>
+   
+  
+  
+  </Modal>
+  {/* Rest of your component code */}
 
     </div>
   );
